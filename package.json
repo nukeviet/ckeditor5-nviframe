@@ -1,0 +1,41 @@
+{
+  "name": "@nukeviet/ckeditor5-nviframe",
+  "version": "41.2.0",
+  "description": "Quản lý iframe cho CKEditor 5.",
+  "keywords": [
+    "nukeviet",
+    "nukeviet 4",
+    "nukeviet 4.5",
+    "nukeviet 4.6",
+    "nukeviet 5",
+    "nukeviet ckeditor",
+    "nukeviet ckeditor5"
+  ],
+  "type": "module",
+  "main": "src/index.js",
+  "dependencies": {
+    "ckeditor5": "^46.0.2"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-core": "41.2.0",
+    "@ckeditor/ckeditor5-engine": "41.2.0",
+    "@ckeditor/ckeditor5-utils": "41.2.0",
+    "typescript": "5.0.4"
+  },
+  "author": "VINADES.,JSC (https://vinades.vn/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://nukeviet.vn/",
+  "bugs": "https://github.com/nukeviet/nukeviet/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nukeviet/ckeditor5-nviframe.git"
+  },
+  "files": [
+    "lang",
+    "src",
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json"
+  }
+}

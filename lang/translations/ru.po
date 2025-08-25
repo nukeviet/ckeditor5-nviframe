@@ -1,0 +1,17 @@
+# NukeViet NVBox for CKEditor5
+# @version 4.x
+# @author VINADES.,JSC <contact@vinades.vn>
+# @copyright (C) 2009-2024 VINADES.,JSC. All rights reserved
+# @license GNU/GPL version 2 or any later version
+# @see https://github.com/nukeviet The NukeViet CMS GitHub project
+#
+msgid ""
+msgstr ""
+"Language-Team: Русский (https://nukeviet.vn/)\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "NVIframe"
+msgid "NVIframe"
+msgstr "NVIframe"
