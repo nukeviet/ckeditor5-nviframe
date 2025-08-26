@@ -1,6 +1,6 @@
 {
   "name": "@nukeviet/ckeditor5-nviframe",
-  "version": "41.2.0",
+  "version": "46.0.2",
   "description": "Quản lý iframe cho CKEditor 5.",
   "keywords": [
     "nukeviet",
@@ -17,9 +17,9 @@
     "ckeditor5": "^46.0.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "41.2.0",
-    "@ckeditor/ckeditor5-engine": "41.2.0",
-    "@ckeditor/ckeditor5-utils": "41.2.0",
+    "@ckeditor/ckeditor5-core": "46.0.2",
+    "@ckeditor/ckeditor5-engine": "46.0.2",
+    "@ckeditor/ckeditor5-utils": "46.0.2",
     "typescript": "5.0.4"
   },
   "author": "VINADES.,JSC (https://vinades.vn/)",
