@@ -7,11 +7,26 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Vietnamese (https://nukeviet.vn/)\n"
 "Language: vi\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "NVIframe"
-msgid "NVIframe"
-msgstr "NVIframe"
+msgctxt "Insert iframe"
+msgid "Insert iframe"
+msgstr "Chèn iframe"
+
+msgctxt "The URL must not be empty."
+msgid "The URL must not be empty."
+msgstr "URL không được để trống."
+
+msgctxt "Paste the iframe URL in the input."
+msgid "Paste the iframe URL in the input."
+msgstr "Dán URL iframe vào ô nhập."
+
+msgctxt "Tip: Paste the URL into the content to embed faster."
+msgid "Tip: Paste the URL into the content to embed faster."
+msgstr "Mẹo: Dán URL vào ô nhập để thao tác nhanh hơn."
+
+msgctxt "Iframe URL"
+msgid "Iframe URL"
+msgstr "URL iframe"

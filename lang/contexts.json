@@ -1,3 +1,7 @@
 {
-	"NVIframe": "NVIframe plugin developed for NukeViet"
+	"Insert iframe": "Insert iframe",
+	"The URL must not be empty.": "The URL must not be empty.",
+	"Paste the iframe URL in the input.": "Paste the iframe URL in the input.",
+	"Tip: Paste the URL into the content to embed faster.": "Tip: Paste the URL into the content to embed faster.",
+	"Iframe URL": "Iframe URL"
 }

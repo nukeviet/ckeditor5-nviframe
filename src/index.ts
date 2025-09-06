@@ -12,5 +12,7 @@
  */
 
 export { default as NVIframe } from './nviframe.js';
+export { default as NVIframeInsert } from './nviframeinsert.js';
+export { default as NVIframeInsertUI } from './iframeinsert/nviframeinsertui.js';
 
 import './augmentation.js';

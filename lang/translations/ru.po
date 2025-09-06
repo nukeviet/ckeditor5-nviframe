@@ -7,11 +7,26 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Русский (https://nukeviet.vn/)\n"
 "Language: ru\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "NVIframe"
-msgid "NVIframe"
-msgstr "NVIframe"
+msgctxt "Insert iframe"
+msgid "Insert iframe"
+msgstr "Вставить iframe"
+
+msgctxt "The URL must not be empty."
+msgid "The URL must not be empty."
+msgstr "URL не должен быть пустым."
+
+msgctxt "Paste the iframe URL in the input."
+msgid "Paste the iframe URL in the input."
+msgstr "Вставьте URL iframe в поле ввода."
+
+msgctxt "Tip: Paste the URL into the content to embed faster."
+msgid "Tip: Paste the URL into the content to embed faster."
+msgstr "Совет: Вставьте URL в содержимое, чтобы быстрее встроить."
+
+msgctxt "Iframe URL"
+msgid "Iframe URL"
+msgstr "URL iframe"

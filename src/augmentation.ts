@@ -8,7 +8,9 @@
  */
 
 import type {
-	NVIframe
+	NVIframe,
+	NVIframeInsert,
+	NVIframeInsertUI
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -21,6 +23,8 @@ declare module '@ckeditor/ckeditor5-core' {
 
 	interface PluginsMap {
 		[NVIframe.pluginName]: NVIframe;
+		[NVIframeInsert.pluginName]: NVIframeInsert;
+		[NVIframeInsertUI.pluginName]: NVIframeInsertUI;
 	}
 
 	// interface CommandsMap {
