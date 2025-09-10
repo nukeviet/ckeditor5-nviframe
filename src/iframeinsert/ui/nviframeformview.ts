@@ -10,6 +10,7 @@
 import {
 	type InputTextView,
 	LabeledFieldView,
+	FormRowView,
 	View,
 	createLabeledInputText,
 	submitHandler
@@ -72,13 +73,17 @@ export class NVIframeFormView extends View {
 
 		this._validators = validators;
 
+		const formRow = new FormRowView(locale);
+		formRow.children.add(this.urlInputView);
+		formRow.class.push('ck-iframe-form__row_single');
+
 		this.setTemplate({
 			tag: 'form',
 
 			attributes: {
 				class: [
 					'ck',
-					'ck-media-form',
+					'ck-iframe-form',
 					'ck-responsive-form'
 				],
 
@@ -86,7 +91,7 @@ export class NVIframeFormView extends View {
 			},
 
 			children: [
-				this.urlInputView
+				formRow
 			]
 		});
 	}

@@ -5,35 +5,45 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-media-form {
-	display: flex;
-	align-items: flex-start;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	width: 400px;
+.ck.ck-iframe-form {
+  @mixin ck-media-phone {
+    &.ck-iframe-form {
+      width: calc(100vw - var(--ck-spacing-large) - 32px);
+      padding: var(--ck-spacing-large);
+    }
+  }
 
-	& .ck-labeled-field-view {
-		display: inline-block;
-		width: 100%;
-	}
+	>.ck-form__row {
+		padding: 0;
+		margin-bottom: var(--ck-spacing-large);
+		width: 500px;
 
-	& .ck-label {
-		display: none;
-	}
-
-	& .ck-input {
-		width: 100%;
-	}
-
-	@mixin ck-media-phone {
-		flex-wrap: wrap;
-
-		& .ck-labeled-field-view {
-			flex-basis: 100%;
+		@mixin ck-media-phone {
+			width: 100%;
 		}
 
-		& .ck-button {
-			flex-basis: 50%;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+@mixin ck-media-phone {
+  .ck.ck-responsive-form.ck-iframe-form {
+    .ck-labeled-field-view {
+      margin: 0;
+    }
+  }
+}
+
+.ck-iframe-form__row_single {
+	>div {
+		flex: 0 0 100%;
+		max-width: 100%;
+
+		.ck-input {
+			flex: 0 0 100%;
+			max-width: 100%;
 		}
 	}
 }
