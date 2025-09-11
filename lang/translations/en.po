@@ -30,3 +30,35 @@ msgstr "Tip: Paste the URL into the content to embed faster."
 msgctxt "Iframe URL"
 msgid "Iframe URL"
 msgstr "Iframe URL"
+
+msgctxt "Size"
+msgid "Size"
+msgstr "Size"
+
+msgctxt "Width"
+msgid "Width"
+msgstr "Width"
+
+msgctxt "Height"
+msgid "Height"
+msgstr "Height"
+
+msgctxt "Auto"
+msgid "Auto"
+msgstr "Auto"
+
+msgctxt "Fixed"
+msgid "Fixed"
+msgstr "Fixed"
+
+msgctxt "Ratio"
+msgid "Ratio"
+msgstr "Ratio"
+
+msgctxt "In pixels"
+msgid "In pixels"
+msgstr "In pixels"
+
+msgctxt "Use the format x:y"
+msgid "Use the format x:y"
+msgstr "Use the format x:y"

@@ -30,3 +30,35 @@ msgstr "Совет: Вставьте URL в содержимое, чтобы б�
 msgctxt "Iframe URL"
 msgid "Iframe URL"
 msgstr "URL iframe"
+
+msgctxt "Size"
+msgid "Size"
+msgstr "Размер"
+
+msgctxt "Width"
+msgid "Width"
+msgstr "Ширина"
+
+msgctxt "Height"
+msgid "Height"
+msgstr "Высота"
+
+msgctxt "Auto"
+msgid "Auto"
+msgstr "Авто"
+
+msgctxt "Fixed"
+msgid "Fixed"
+msgstr "Фиксированный"
+
+msgctxt "Ratio"
+msgid "Ratio"
+msgstr "Соотношение"
+
+msgctxt "In pixels"
+msgid "In pixels"
+msgstr "В пикселях"
+
+msgctxt "Use the format x:y"
+msgid "Use the format x:y"
+msgstr "Используйте формат x:y"

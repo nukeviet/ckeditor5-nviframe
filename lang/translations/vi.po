@@ -30,3 +30,35 @@ msgstr "Mẹo: Dán URL vào ô nhập để thao tác nhanh hơn."
 msgctxt "Iframe URL"
 msgid "Iframe URL"
 msgstr "URL iframe"
+
+msgctxt "Size"
+msgid "Size"
+msgstr "Kích thước"
+
+msgctxt "Width"
+msgid "Width"
+msgstr "Chiều rộng"
+
+msgctxt "Height"
+msgid "Height"
+msgstr "Chiều cao"
+
+msgctxt "Auto"
+msgid "Auto"
+msgstr "Tự động"
+
+msgctxt "Fixed"
+msgid "Fixed"
+msgstr "Cố định"
+
+msgctxt "Ratio"
+msgid "Ratio"
+msgstr "Tỷ lệ"
+
+msgctxt "In pixels"
+msgid "In pixels"
+msgstr "Đơn vị pixel"
+
+msgctxt "Use the format x:y"
+msgid "Use the format x:y"
+msgstr "Nhập dạng x:y"

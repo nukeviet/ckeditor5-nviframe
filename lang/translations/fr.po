@@ -30,3 +30,35 @@ msgstr "Astuce : Collez l'URL dans le contenu pour l'intégrer plus rapidement."
 msgctxt "Iframe URL"
 msgid "Iframe URL"
 msgstr "URL de l'iframe"
+
+msgctxt "Size"
+msgid "Size"
+msgstr "Taille"
+
+msgctxt "Width"
+msgid "Width"
+msgstr "Largeur"
+
+msgctxt "Height"
+msgid "Height"
+msgstr "Hauteur"
+
+msgctxt "Auto"
+msgid "Auto"
+msgstr "Automatique"
+
+msgctxt "Fixed"
+msgid "Fixed"
+msgstr "Fixe"
+
+msgctxt "Ratio"
+msgid "Ratio"
+msgstr "Rapport"
+
+msgctxt "In pixels"
+msgid "In pixels"
+msgstr "En pixels"
+
+msgctxt "Use the format x:y"
+msgid "Use the format x:y"
+msgstr "Utilisez le format x:y"
