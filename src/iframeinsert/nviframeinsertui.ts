@@ -95,7 +95,7 @@ export default class NVIframeInsertUI extends Plugin {
 
         if (!this._formView) {
             this._formView = new (CssTransitionDisablerMixin(NVIframeFormView))(getFormValidators(editor.t), editor.locale);
-            //this._formView.on('submit', () => this._handleSubmitForm());
+            this._formView.on('submit', () => this._handleSubmitForm());
         }
 
         dialog.show({
@@ -105,6 +105,10 @@ export default class NVIframeInsertUI extends Plugin {
             isModal: true,
             onShow: () => {
                 this._formView!.url = '';
+                this._formView!.widthType = 'fixed'; // auto
+                this._formView!.width = 600;
+                this._formView!.height = 500;
+                this._formView!.ratio = [16, 9];
                 // FIXME
                 //this._formView!.url = command.value || '';
                 this._formView!.resetFormStatus();
@@ -120,19 +124,67 @@ export default class NVIframeInsertUI extends Plugin {
                     label: isMediaSelected ? t('Save') : t('Insert'),
                     class: 'ck-button-action',
                     withText: true,
-                    onExecute: () => { /* this._handleSubmitForm() */ }
+                    onExecute: () => this._handleSubmitForm()
                 }
             ]
         });
     }
+
+    /**
+     * Xử lý khi submit form
+     */
+    private _handleSubmitForm() {
+        const editor = this.editor;
+        const dialog = editor.plugins.get('Dialog');
+
+        if (this._formView!.isValid()) {
+            // FIXME
+            //editor.execute('mediaEmbed', this._formView!.url);
+            dialog.hide();
+            editor.editing.view.focus();
+        }
+    }
 }
 
-function getFormValidators(t: LocaleTranslate): Array<(v: NVIframeFormView) => string | undefined> {
+/**
+ * Các hàm kiểm tra tính hợp lệ của form
+ *
+ * @param t
+ * @returns
+ */
+function getFormValidators(t: LocaleTranslate): Array<(v: NVIframeFormView) => boolean> {
     return [
+        // Kiểm tra URL không được để trống
         form => {
             if (!form.url.length) {
-                return t('The URL must not be empty.');
+                form.urlInputView.errorText = t('The URL must not be empty.');
+                return false;
             }
+            return true;
+        },
+        // Kiểm tra chiều rộng > 0
+        form => {
+            if (form.width <= 0 || isNaN(form.width)) {
+                form.widthInputView.errorText = t('Width must be greater than 0');
+                return false;
+            }
+            return true;
+        },
+        // Kiểm tra chiều cao > 0
+        form => {
+            if (form.height <= 0 || isNaN(form.height)) {
+                form.heightInputView.errorText = t('Height must be greater than 0');
+                return false;
+            }
+            return true;
+        },
+        // Kiểm tra tỷ lệ khung hình đúng định dạng
+        form => {
+            if (form.ratio === null) {
+                form.ratioInputView.errorText = t('Ratio must follow the x:y format');
+                return false;
+            }
+            return true;
         }
     ];
 }

@@ -61,7 +61,7 @@ export class NVIframeFormView extends View {
 	/**
 	 * Tỷ lệ khung hình iframe
 	 */
-	declare public iframeRatioInputValue: string;
+	declare public iframeRatioInputValue: [number, number] | null;
 
 	/**
 	 * Kiểu chiều rộng iframe: tự động hay cố định
@@ -73,18 +73,30 @@ export class NVIframeFormView extends View {
 	 */
 	public urlInputView: LabeledFieldView<InputTextView>;
 
+	/**
+	 * The width input view.
+	 */
 	public widthInputView: LabeledFieldView<InputNumberView>;
 
+	/**
+	 * The height input view.
+	 */
 	public heightInputView: LabeledFieldView<InputNumberView>;
 
+	/**
+	 * The ratio input view.
+	 */
 	public ratioInputView: LabeledFieldView<InputTextView>;
 
+	/**
+	 * The type width select view.
+	 */
 	public typeWidthSelectView: LabeledFieldView<DropdownView>;
 
 	/**
 	 * Mảng các hàm kiểm tra tính hợp lệ của form
 	 */
-	private readonly _validators: Array<(v: NVIframeFormView) => string | undefined>;
+	private readonly _validators: Array<(v: NVIframeFormView) => boolean>;
 
 	/**
 	 * Nhãn của ô nhập URL iframe mặc định
@@ -97,19 +109,36 @@ export class NVIframeFormView extends View {
 	private _urlInputViewInfoTip?: string;
 
 	/**
+	 * Nhãn của ô nhập chiều rộng iframe mặc định
+	 */
+	private _widthInputViewInfoDefault?: string;
+
+	/**
+	 * Nhãn của ô nhập chiều cao iframe mặc định
+	 */
+	private _heightInputViewInfoDefault?: string;
+
+	/**
+	 * Nhãn của ô nhập tỷ lệ iframe mặc định
+	 */
+	private _ratioInputViewInfoDefault?: string;
+
+	/**
 	 * @param validators Array of form validators.
 	 * @param locale
 	 */
-	constructor(validators: Array<(v: NVIframeFormView) => string | undefined>, locale: Locale) {
+	constructor(validators: Array<(v: NVIframeFormView) => boolean>, locale: Locale) {
 		super(locale);
 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
+
 		this.set('iframeURLInputValue', '');
 		this.set('iframeHeightInputValue', 500);
 		this.set('iframeWidthInputValue', 600);
-		this.set('iframeRatioInputValue', '16:9');
+		this.set('iframeRatioInputValue', [16, 9]);
 		this.set('iframeTypeWidthValue', 'auto');
+
 		this.urlInputView = this._createUrlInput();
 		this.widthInputView = this._createWidthInput();
 		this.heightInputView = this._createHeightInput();
@@ -162,6 +191,11 @@ export class NVIframeFormView extends View {
 		});
 
 		this.focusTracker.add(this.urlInputView.element!);
+		this.focusTracker.add(this.widthInputView.element!);
+		this.focusTracker.add(this.heightInputView.element!);
+		this.focusTracker.add(this.ratioInputView.element!);
+		this.focusTracker.add(this.typeWidthSelectView.element!);
+
 		this.keystrokes.listenTo(this.element!);
 	}
 
@@ -197,6 +231,75 @@ export class NVIframeFormView extends View {
 	}
 
 	/**
+	 * @param type 'auto' or 'fixed'
+	 */
+	public set widthType(type: 'auto' | 'fixed') {
+		const t = this.locale!.t;
+		this.set('iframeTypeWidthValue', type);
+		this.typeWidthSelectView.fieldView.buttonView.set({ label: type === 'auto' ? t('Auto') : t('Fixed') });
+		this._changeTypeWidth();
+	}
+
+	/**
+	 * Get kiểu chiều rộng: 'auto' or 'fixed'
+	 */
+	public get widthType(): 'auto' | 'fixed' {
+		return this.iframeTypeWidthValue;
+	}
+
+	/**
+	 * Đặt chiều rộng iframe
+	 */
+	public set width(width: number) {
+		this.iframeWidthInputValue = width;
+		this.widthInputView.fieldView.value = width.toString();
+	}
+
+	/**
+	 * Lấy chiều rộng iframe
+	 */
+	public get width(): number {
+		return this.widthInputView.fieldView.element!.value ? parseInt(this.widthInputView.fieldView.element!.value) : 0;
+	}
+
+	/**
+	 * Đặt chiều cao iframe
+	 */
+	public set height(height: number) {
+		this.iframeHeightInputValue = height;
+		this.heightInputView.fieldView.value = height.toString();
+	}
+
+	/**
+	 * Lấy chiều cao iframe
+	 */
+	public get height(): number {
+		return this.heightInputView.fieldView.element!.value ? parseInt(this.heightInputView.fieldView.element!.value) : 0;
+	}
+
+	/**
+	 * Đặt tỷ lệ khung hình
+	 */
+	public set ratio(ratio: [number, number] | null) {
+		this.iframeRatioInputValue = ratio;
+		this.ratioInputView.fieldView.value = ratio ? ratio.join(':') : '';
+		this._changeTypeWidth();
+	}
+
+	/**
+	 * Lấy tỷ lệ khung hình
+	 */
+	public get ratio(): [number, number] | null {
+		const ratio = this._parseRatio();
+		if (ratio) {
+			this.iframeRatioInputValue = ratio;
+			return ratio;
+		}
+		this.iframeRatioInputValue = null;
+		return null;
+	}
+
+	/**
 	 * Kiểm tra tính hợp lệ của form.
 	 *
 	 * @returns true|false
@@ -204,15 +307,15 @@ export class NVIframeFormView extends View {
 	public isValid(): boolean {
 		this.resetFormStatus();
 
+		let errorNumber = 0;
+
 		for (const validator of this._validators) {
-			const errorText = validator(this);
-			if (errorText) {
-				this.urlInputView.errorText = errorText;
-				return false;
+			if (!validator(this)) {
+				errorNumber++;
 			}
 		}
 
-		return true;
+		return errorNumber === 0;
 	}
 
 	/**
@@ -223,6 +326,35 @@ export class NVIframeFormView extends View {
 	public resetFormStatus(): void {
 		this.urlInputView.errorText = null;
 		this.urlInputView.infoText = this._urlInputViewInfoDefault!;
+
+		this.widthInputView.errorText = null;
+		this.widthInputView.infoText = this._widthInputViewInfoDefault!;
+
+		this.heightInputView.errorText = null;
+		this.heightInputView.infoText = this._heightInputViewInfoDefault!;
+
+		this.ratioInputView.errorText = null;
+		this.ratioInputView.infoText = this._ratioInputViewInfoDefault!;
+	}
+
+	/**
+	 * Thay đổi hiển thị các ô nhập chiều rộng, chiều cao, tỷ lệ
+	 *
+	 * @returns void
+	 */
+	private _changeTypeWidth() {
+		this.resetFormStatus();
+
+		if (this.iframeTypeWidthValue === 'auto') {
+			this.widthInputView.element!.classList.add('ck-hidden');
+			this.heightInputView.element!.classList.add('ck-hidden');
+			this.ratioInputView.element!.classList.remove('ck-hidden');
+			return;
+		}
+
+		this.widthInputView.element!.classList.remove('ck-hidden');
+		this.heightInputView.element!.classList.remove('ck-hidden');
+		this.ratioInputView.element!.classList.add('ck-hidden');
 	}
 
 	/**
@@ -297,18 +429,30 @@ export class NVIframeFormView extends View {
 		dropdown.on('execute', (evt) => {
 			const buttonView = evt.source as ButtonView;
 			dropdown.buttonView.set({ label: buttonView.label });
+			this.set('iframeTypeWidthValue', buttonView.label === t('Auto') ? 'auto' : 'fixed');
 
-			if (buttonView.label === t('Auto')) {
-				this.set('iframeTypeWidthValue', 'auto');
-				this.widthInputView.element!.classList.add('ck-hidden');
-				this.heightInputView.element!.classList.add('ck-hidden');
-				this.ratioInputView.element!.classList.remove('ck-hidden');
+			// Trường hợp đổi sang tự động mà chiều rộng hoặc chiều cao lỗi thì đặt nó làm mặc định
+			if (this.iframeTypeWidthValue === 'auto') {
+				if (this.width <= 0 || isNaN(this.width)) {
+					this.widthInputView.fieldView.set('value', '600');
+					this.widthInputView.fieldView.element!.value = '600';
+					this.widthInputView.fieldView.isEmpty = false;
+				}
+				if (this.height <= 0 || isNaN(this.height)) {
+					this.heightInputView.fieldView.set('value', '500');
+					this.heightInputView.fieldView.element!.value = '500';
+					this.heightInputView.fieldView.isEmpty = false;
+				}
 			} else {
-				this.set('iframeTypeWidthValue', 'fixed');
-				this.widthInputView.element!.classList.remove('ck-hidden');
-				this.heightInputView.element!.classList.remove('ck-hidden');
-				this.ratioInputView.element!.classList.add('ck-hidden');
+				// Trường hợp đổi sang cố định mà tỷ lệ lỗi thì đặt nó làm mặc định
+				if (this.ratio === null) {
+					this.ratioInputView.fieldView.set('value', '16:9');
+					this.ratioInputView.fieldView.element!.value = '16:9';
+					this.ratioInputView.fieldView.isEmpty = false;
+				}
 			}
+
+			this._changeTypeWidth();
 		});
 		addListToDropdown(dropdown, items);
 
@@ -320,8 +464,11 @@ export class NVIframeFormView extends View {
 
 		labeledInput.label = t('Size');
 		labeledInput.isEmpty = false;
-		labeledInput.render();
-		labeledInput.element!.classList.add('c4');
+		labeledInput.extendTemplate({
+			attributes: {
+				class: ['c4']
+    		}
+		});
 
 		return labeledInput;
 	}
@@ -336,16 +483,15 @@ export class NVIframeFormView extends View {
 		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputNumber);
 		const inputField = labeledInput.fieldView;
 
+		this._widthInputViewInfoDefault = t('In pixels');
+
 		labeledInput.label = t('Width');
-		labeledInput.infoText = t('In pixels');
+		labeledInput.infoText = this._widthInputViewInfoDefault;
 		labeledInput.extendTemplate({
 			attributes: {
 				class: ['c4']
     		}
 		});
-
-		labeledInput.render();
-		labeledInput.element!.classList.add('ck-hidden');
 
 		inputField.min = 0;
 		inputField.max = 9999;
@@ -363,16 +509,15 @@ export class NVIframeFormView extends View {
 		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputNumber);
 		const inputField = labeledInput.fieldView;
 
+		this._heightInputViewInfoDefault = t('In pixels');
+
 		labeledInput.label = t('Height');
-		labeledInput.infoText = t('In pixels');
+		labeledInput.infoText = this._heightInputViewInfoDefault;
 		labeledInput.extendTemplate({
 			attributes: {
 				class: ['c4']
     		}
 		});
-
-		labeledInput.render();
-		labeledInput.element!.classList.add('ck-hidden');
 
 		inputField.min = 0;
 		inputField.max = 9999;
@@ -390,8 +535,10 @@ export class NVIframeFormView extends View {
 		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputText);
 		//const inputField = labeledInput.fieldView;
 
+		this._ratioInputViewInfoDefault = t('Use the format x:y');
+
 		labeledInput.label = t('Ratio');
-		labeledInput.infoText = t('Use the format x:y');
+		labeledInput.infoText = this._ratioInputViewInfoDefault;
 		labeledInput.extendTemplate({
 			attributes: {
 				class: ['c8']
@@ -399,5 +546,19 @@ export class NVIframeFormView extends View {
 		});
 
 		return labeledInput;
+	}
+
+	/**
+	 * Xử lý ô nhập tỷ lệ khung hình ra dạng [number, number] hoặc null nếu không đúng định dạng
+	 *
+	 * @returns [number, number] | null
+	 */
+	private _parseRatio(): [number, number] | null {
+		const parts = this.ratioInputView.fieldView.element!.value.split(':').map(part => parseInt(part.trim(), 10));
+		if (parts.length === 2 && parts.every(num => !isNaN(num) && num > 0)) {
+			return [parts[0], parts[1]];
+		}
+
+		return null;
 	}
 }

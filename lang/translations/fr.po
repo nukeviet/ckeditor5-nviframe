@@ -62,3 +62,15 @@ msgstr "En pixels"
 msgctxt "Use the format x:y"
 msgid "Use the format x:y"
 msgstr "Utilisez le format x:y"
+
+msgctxt "Width must be greater than 0"
+msgid "Width must be greater than 0"
+msgstr "La largeur doit être supérieure à 0"
+
+msgctxt "Height must be greater than 0"
+msgid "Height must be greater than 0"
+msgstr "La hauteur doit être supérieure à 0"
+
+msgctxt "Ratio must follow the x:y format"
+msgid "Ratio must follow the x:y format"
+msgstr "Le rapport doit suivre le format x:y"

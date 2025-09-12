@@ -62,3 +62,15 @@ msgstr "Đơn vị pixel"
 msgctxt "Use the format x:y"
 msgid "Use the format x:y"
 msgstr "Nhập dạng x:y"
+
+msgctxt "Width must be greater than 0"
+msgid "Width must be greater than 0"
+msgstr "Chiều rộng phải lớn hơn 0"
+
+msgctxt "Height must be greater than 0"
+msgid "Height must be greater than 0"
+msgstr "Chiều cao phải lớn hơn 0"
+
+msgctxt "Ratio must follow the x:y format"
+msgid "Ratio must follow the x:y format"
+msgstr "Tỷ lệ phải theo định dạng x:y"

@@ -62,3 +62,15 @@ msgstr "In pixels"
 msgctxt "Use the format x:y"
 msgid "Use the format x:y"
 msgstr "Use the format x:y"
+
+msgctxt "Width must be greater than 0"
+msgid "Width must be greater than 0"
+msgstr "Width must be greater than 0"
+
+msgctxt "Height must be greater than 0"
+msgid "Height must be greater than 0"
+msgstr "Height must be greater than 0"
+
+msgctxt "Ratio must follow the x:y format"
+msgid "Ratio must follow the x:y format"
+msgstr "Ratio must follow the x:y format"
