@@ -14,5 +14,6 @@
 	"Use the format x:y": "Use the format x:y",
 	"Width must be greater than 0": "Width must be greater than 0",
 	"Height must be greater than 0": "Height must be greater than 0",
-	"Ratio must follow the x:y format": "Ratio must follow the x:y format"
+	"Ratio must follow the x:y format": "Ratio must follow the x:y format",
+	"Iframe widget": "Iframe widget"
 }

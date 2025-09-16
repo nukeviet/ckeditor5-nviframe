@@ -14,5 +14,9 @@
 export { default as NVIframe } from './nviframe.js';
 export { default as NVIframeInsert } from './nviframeinsert.js';
 export { default as NVIframeInsertUI } from './iframeinsert/nviframeinsertui.js';
+export { default as IframeEditing } from './iframe/iframeediting.js';
+export { default as IframeUtils } from './iframeutils.js';
+export type { default as InsertIframeCommand } from './iframe/insertiframecommand.js';
+export type { default as ReplaceIframeSourceCommand } from './iframe/replaceiframesourcecommand.js';
 
 import './augmentation.js';

@@ -8,6 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5';
+import IframeEditing from './iframe/iframeediting.js';
+import NVIframeInsertUI from './iframeinsert/nviframeinsertui.js';
 
 export default class NVIframe extends Plugin {
     /**
@@ -20,7 +22,7 @@ export default class NVIframe extends Plugin {
     /**
      * @inheritDoc
      */
-    // static get requires() {
-    //     return ['Link', NVBoxEditing, NVBoxUI] as const;
-    // }
+    static get requires() {
+        return [IframeEditing, NVIframeInsertUI] as const;
+    }
 }
