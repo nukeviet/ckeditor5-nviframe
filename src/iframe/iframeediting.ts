@@ -36,7 +36,7 @@ export default class IframeEditing extends Plugin {
 			allowAttributes: [
 				'allow', 'allowfullscreen', 'height',
 				'referrerpolicy', 'sandbox', 'src', 'srcdoc',
-				'width'
+				'width', 'type', 'ratio'
 			]
 		});
 
@@ -55,14 +55,14 @@ export default class IframeEditing extends Plugin {
 		const conversion = editor.conversion;
 		const iframeUtils: IframeUtils = this.editor.plugins.get('IframeUtils');
 
-		// Model => div.nv-iframe
+		// Model => cấu trúc div.nv-iframe cho .getData() - submit form
 		conversion.for('dataDowncast')
 			.elementToStructure({
 				model: 'iframe',
 				view: (modelElement, { writer }) => createIframeViewElement(writer)
 			});
 
-		// Model => div.nv-iframe
+		// Model => cấu trúc div.nv-iframe cho editing view - hiển thị trong trình soạn thảo
 		conversion.for('editingDowncast')
 			.elementToStructure({
 				model: 'iframe',
@@ -71,6 +71,7 @@ export default class IframeEditing extends Plugin {
 				)
 			});
 
+		// Model => attribute cho cả data và editing
 		conversion.for('downcast')
 			.add(downcastIframeAttribute(iframeUtils, 'src'));
 

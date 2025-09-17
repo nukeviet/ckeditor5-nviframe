@@ -27,10 +27,10 @@ import {
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '../../../theme/nviframeform.css';
+import '../../../theme/iframeform.css';
 
 /**
- * The media form view controller class.
+ * The iframe form view controller class.
  */
 export class NVIframeFormView extends View {
 	/**

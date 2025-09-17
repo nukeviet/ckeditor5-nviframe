@@ -74,3 +74,11 @@ msgstr "Высота должна быть больше 0"
 msgctxt "Ratio must follow the x:y format"
 msgid "Ratio must follow the x:y format"
 msgstr "Соотношение должно соответствовать формату x:y"
+
+msgctxt "Update iframe"
+msgid "Update iframe"
+msgstr "Обновить iframe"
+
+msgctxt "Iframe widget"
+msgid "Iframe widget"
+msgstr "Виджет iframe"

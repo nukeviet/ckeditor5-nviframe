@@ -74,3 +74,11 @@ msgstr "Height must be greater than 0"
 msgctxt "Ratio must follow the x:y format"
 msgid "Ratio must follow the x:y format"
 msgstr "Ratio must follow the x:y format"
+
+msgctxt "Update iframe"
+msgid "Update iframe"
+msgstr "Update iframe"
+
+msgctxt "Iframe widget"
+msgid "Iframe widget"
+msgstr "Iframe widget"

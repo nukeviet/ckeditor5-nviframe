@@ -11,6 +11,8 @@ import { Plugin } from 'ckeditor5';
 import IframeEditing from './iframe/iframeediting.js';
 import NVIframeInsertUI from './iframeinsert/nviframeinsertui.js';
 
+import '../theme/iframe.css';
+
 export default class NVIframe extends Plugin {
     /**
      * @inheritDoc

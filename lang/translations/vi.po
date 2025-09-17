@@ -74,3 +74,11 @@ msgstr "Chiều cao phải lớn hơn 0"
 msgctxt "Ratio must follow the x:y format"
 msgid "Ratio must follow the x:y format"
 msgstr "Tỷ lệ phải theo định dạng x:y"
+
+msgctxt "Update iframe"
+msgid "Update iframe"
+msgstr "Cập nhật iframe"
+
+msgctxt "Iframe widget"
+msgid "Iframe widget"
+msgstr "Widget iframe"

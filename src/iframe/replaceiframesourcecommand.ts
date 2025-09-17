@@ -1,21 +1,21 @@
 /**
- * NukeViet NVMedia for CKEditor5
- * @version 4.x
+ * NukeViet NVIframe for CKEditor5
+ * @version 5.x
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2024 VINADES.,JSC. All rights reserved
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
 import { Command, type Editor } from 'ckeditor5';
-import type NVMediaUtils from '../nvmediauntils.js';
+import type IframeUtils from '../iframeutils.js';
 import type { ModelWriter, ModelElement } from 'ckeditor5';
 
 /**
- * Lệnh thay src của video, audio thành src khác.
+ * Lệnh thay src của iframe thành src khác.
  *
  * ```ts
- * editor.execute( 'replaceIframeSource', { source: 'http://url.to.the/media' } );
+ * editor.execute( 'replaceIframeSource', { source: 'http://url.iframe.to.the/replace' } );
  * ```
  */
 export default class ReplaceIframeSourceCommand extends Command {
@@ -24,7 +24,7 @@ export default class ReplaceIframeSourceCommand extends Command {
     constructor(editor: Editor) {
         super(editor);
 
-        this.decorate('cleanupMedia');
+        this.decorate('cleanupIframe');
     }
 
     /**
@@ -32,10 +32,10 @@ export default class ReplaceIframeSourceCommand extends Command {
      */
     public override refresh(): void {
         const editor = this.editor;
-        const mediaUtils: NVMediaUtils = editor.plugins.get('NVMediaUtils');
+        const iframeUtils: IframeUtils = editor.plugins.get('IframeUtils');
         const element = this.editor.model.document.selection.getSelectedElement()!;
 
-        this.isEnabled = mediaUtils.isMedia(element);
+        this.isEnabled = iframeUtils.isIframe(element);
         this.value = this.isEnabled ? element.getAttribute('src') as string : null;
     }
 
@@ -44,24 +44,24 @@ export default class ReplaceIframeSourceCommand extends Command {
      *
      * @fires execute
      * @param options Options for the executed command.
-     * @param options.source The media source to replace.
+     * @param options.source The url source to replace.
      */
     public override execute(options: { source: string }): void {
-        const media = this.editor.model.document.selection.getSelectedElement()!;
+        const iframe = this.editor.model.document.selection.getSelectedElement()!;
 
         this.editor.model.change(writer => {
-            writer.setAttribute('src', options.source, media);
-            this.cleanupMedia(writer, media);
+            writer.setAttribute('src', options.source, iframe);
+            this.cleanupIframe(writer, iframe);
         });
     }
 
-    public cleanupMedia(writer: ModelWriter, media: ModelElement): void {
-        //writer.removeAttribute('srcset', media);
-        //writer.removeAttribute('sizes', media);
-        //writer.removeAttribute('sources', media);
-        //writer.removeAttribute('width', media);
-        //writer.removeAttribute('height', media);
-        //writer.removeAttribute('alt', media);
+    public cleanupIframe(writer: ModelWriter, iframe: ModelElement): void {
+        //writer.removeAttribute('srcset', iframe);
+        //writer.removeAttribute('sizes', iframe);
+        //writer.removeAttribute('sources', iframe);
+        //writer.removeAttribute('width', iframe);
+        //writer.removeAttribute('height', iframe);
+        //writer.removeAttribute('alt', iframe);
         // Not thing, future features
     }
 }

@@ -8,10 +8,13 @@
  */
 
 import { Command, type Editor } from 'ckeditor5';
-import { toArray, type ArrayOrItem } from 'ckeditor5';
-import NVMediaUtils from '../nvmediauntils.js';
+import { toArray, logWarning } from 'ckeditor5';
+import IframeUtils from '../iframeutils.js';
+import { type IframeExecuteCommandOptions, getDefaultIframeExecuteCommandOptions } from './iframeexecuteoptions.js';
 
-export default class InsertNVMediaCommand extends Command {
+export default class InsertIframeCommand extends Command {
+    declare public value: string | undefined;
+
     /**
      * @inheritDoc
      */
@@ -23,34 +26,29 @@ export default class InsertNVMediaCommand extends Command {
      * @inheritDoc
      */
     public override refresh(): void {
-        const mediaUtils: NVMediaUtils = this.editor.plugins.get('NVMediaUtils');
-
-        this.isEnabled = mediaUtils.isMediaAllowed();
+        const iframeUtils: IframeUtils = this.editor.plugins.get('IframeUtils');
+        this.isEnabled = iframeUtils.isIframeAllowed();
     }
 
     /**
-	 * Thực thi lệnh chèn media.
+	 * Thực thi lệnh chèn iframe.
 	 */
-    public override execute(options: { source: ArrayOrItem<string | Record<string, unknown>> }): void {
-        const sourceDefinitions = toArray<string | Record<string, unknown>>(options.source);
+    public override execute(options: string | IframeExecuteCommandOptions): void {
+        if (typeof options === 'string') {
+            const opts = getDefaultIframeExecuteCommandOptions();
+            opts.src = options;
+            options = opts;
+        } else {
+            options = { ...getDefaultIframeExecuteCommandOptions(), ...options };
+        }
+        const iframeUtils: IframeUtils = this.editor.plugins.get('IframeUtils');
+        if (!iframeUtils.isUrl(options.src)) {
+            logWarning('Iframe.url is not a valid URL', options);
+            return;
+        }
+
         const selection = this.editor.model.document.selection;
-        const mediaUtils: NVMediaUtils = this.editor.plugins.get('NVMediaUtils');
         const selectionAttributes = Object.fromEntries(selection.getAttributes());
-
-        sourceDefinitions.forEach((sourceDefinition, index) => {
-            const selectedElement = selection.getSelectedElement();
-
-            if (typeof sourceDefinition === 'string') {
-                sourceDefinition = { src: sourceDefinition };
-            }
-
-            if (index && selectedElement && mediaUtils.isMedia(selectedElement)) {
-                const position = this.editor.model.createPositionAfter(selectedElement);
-
-                mediaUtils.insertMedia({ ...sourceDefinition, ...selectionAttributes }, position);
-            } else {
-                mediaUtils.insertMedia({ ...sourceDefinition, ...selectionAttributes });
-            }
-        });
+        iframeUtils.insertIframe({ ...options, ...selectionAttributes });
     }
 }

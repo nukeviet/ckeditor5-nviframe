@@ -1,8 +1,8 @@
 /**
- * NukeViet NVMedia for CKEditor5
- * @version 4.x
+ * NukeViet NVIframe for CKEditor5
+ * @version 5.x
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2024 VINADES.,JSC. All rights reserved
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
@@ -31,11 +31,9 @@ export default class IframeUtils extends Plugin {
     /**
      *
      */
-    public insertMedia(
+    public insertIframe(
         attributes: Record<string, unknown> = {},
-        selectable: ModelSelection | ModelPosition | null = null,
-        mediaType: ('NVMediaVideo' | 'NVMediaAudio' | null) = null,
-        options: { setMediaSizes?: boolean } = {}
+        selectable: ModelSelection | ModelPosition | null = null
     ): ModelElement | null {
         const editor = this.editor;
         const model = editor.model;
@@ -45,9 +43,6 @@ export default class IframeUtils extends Plugin {
             return null;
         }
 
-        // Xác định loại media từ url, mặc định cho về video
-        const determinedMediaType = determineMediaTypeFromSrc(String(attributes.src), mediaType);
-
         // Gộp các thuộc tính về làm 1
         attributes = {
             ...Object.fromEntries(selection.getAttributes()),
@@ -56,22 +51,22 @@ export default class IframeUtils extends Plugin {
 
         // Xóa các attr nếu không được phép trong schema
         for (const attributeName in attributes) {
-            if (!model.schema.checkAttribute(determinedMediaType, attributeName)) {
+            if (!model.schema.checkAttribute('iframe', attributeName)) {
                 delete attributes[attributeName];
             }
         }
 
         // Chèn model vào
         return model.change(writer => {
-            const mediaElement = writer.createElement(determinedMediaType, attributes);
+            const iframeElement = writer.createElement('iframe', attributes);
 
-            model.insertObject(mediaElement, selectable, null, {
+            model.insertObject(iframeElement, selectable, null, {
                 setSelection: 'on',
                 findOptimalPosition: !selectable ? 'auto' : undefined
             });
 
-            if (mediaElement.parent) {
-                return mediaElement;
+            if (iframeElement.parent) {
+                return iframeElement;
             }
 
             return null;
@@ -96,49 +91,35 @@ export default class IframeUtils extends Plugin {
     }
 
     /**
-     * Kiểm tra phần tử có phải là media (video, audio) không
+     * Kiểm tra phần tử có phải là iframe không
      */
-    public isMedia(modelElement?: ModelElement | null): modelElement is ModelElement & { name: 'NVMediaVideo' | 'NVMediaAudio' } {
-        return this.isMediaVideo(modelElement) || this.isMediaAudio(modelElement);
+    public isIframe(modelElement?: ModelElement | null): modelElement is ModelElement & { name: 'iframe' } {
+        return !!modelElement && modelElement.is('element', 'iframe');
     }
 
     /**
-     * Kiểm tra nếu phần tử được chọn là NVMediaVideo
-     */
-    public isMediaVideo(modelElement?: ModelElement | null): boolean {
-        return !!modelElement && modelElement.is('element', 'NVMediaVideo');
-    }
-
-    /**
-     * Kiểm tra nếu phần tử được chọn là NVMediaAudio
-     */
-    public isMediaAudio(modelElement?: ModelElement | null): boolean {
-        return !!modelElement && modelElement.is('element', 'NVMediaAudio');
-    }
-
-    /**
-     * Kiểm tra xem media có thể chèn vào vị trí hiện tại hay không
+     * Kiểm tra xem iframe có thể chèn vào vị trí hiện tại hay không
      *
      * @internal
      */
-    public isMediaAllowed(): boolean {
+    public isIframeAllowed(): boolean {
         const model = this.editor.model;
         const selection = model.document.selection;
 
-        return isMediaAllowedInParent(this.editor, selection) && isNotInsideMedia(selection);
+        return isIframeAllowedInParent(this.editor, selection) && isNotInsideIframe(selection);
     }
 
     /**
      * Tìm thẻ iframe trong cấu trúc html iframe
      */
-    public findViewIframeElement(figureView: ViewElement): ViewElement | undefined {
-        if (this.isIframeView(figureView)) {
-            return figureView;
+    public findViewIframeElement(divView: ViewElement): ViewElement | undefined {
+        if (this.isIframeView(divView)) {
+            return divView;
         }
 
         const editingView = this.editor.editing.view;
 
-        for (const { item } of editingView.createRangeIn(figureView)) {
+        for (const { item } of editingView.createRangeIn(divView)) {
             if (this.isIframeView(item as ViewElement)) {
                 return item as ViewElement;
             }
@@ -146,7 +127,7 @@ export default class IframeUtils extends Plugin {
     }
 
     /**
-     * Xác định đối tượng ViewElement có phải là media không
+     * Xác định đối tượng ViewElement có phải là iframe không
      */
     public isIframeView(element?: ViewElement | null): boolean {
         return !!element && element.is('element', 'iframe');
@@ -155,15 +136,30 @@ export default class IframeUtils extends Plugin {
     public isBlockIframeView(element?: ViewElement | null): boolean {
         return !!element && element.is('element', 'div') && element.hasClass('nv-iframe');
     }
+
+    /**
+     * Kiểm tra URL hợp lệ hay không
+     *
+     * @param url URL cần kiểm tra
+     * @returns
+     */
+    public isUrl(url: string): boolean {
+        if (url.startsWith('/')) {
+            // Url nội bộ
+            return true;
+        }
+        const urlPattern = /^(https?:\/\/[^\s]+)/;
+        return urlPattern.test(url);
+    }
 }
 
 /**
- * Kiểm tra xem video, audio có chèn được trong đối tượng cha đang chọn hay không
+ * Kiểm tra xem iframe có chèn được trong đối tượng cha đang chọn hay không
  */
-function isMediaAllowedInParent(editor: Editor, selection: ModelSelection | ModelDocumentSelection): boolean {
-    const parent = getInsertMediaParent(selection, editor.model);
+function isIframeAllowedInParent(editor: Editor, selection: ModelSelection | ModelDocumentSelection): boolean {
+    const parent = getInsertIframeParent(selection, editor.model);
 
-    if (editor.model.schema.checkChild(parent as ModelElement, 'NVMediaVideo') || editor.model.schema.checkChild(parent as ModelElement, 'NVMediaAudio')) {
+    if (editor.model.schema.checkChild(parent as ModelElement, 'iframe')) {
         return true;
     }
 
@@ -171,16 +167,16 @@ function isMediaAllowedInParent(editor: Editor, selection: ModelSelection | Mode
 }
 
 /**
- * Checks if selection is not placed inside an image (e.g. its caption).
+ * Checks if selection is not placed inside an iframe (e.g. its caption).
  */
-function isNotInsideMedia(selection: ModelDocumentSelection): boolean {
-    return [...selection.focus!.getAncestors()].every(ancestor => !(ancestor.is('element', 'NVMediaVideo') || ancestor.is('element', 'NVMediaAudio')));
+function isNotInsideIframe(selection: ModelDocumentSelection): boolean {
+    return [...selection.focus!.getAncestors()].every(ancestor => !ancestor.is('element', 'iframe'));
 }
 
 /**
  * Returns a node that will be used to insert image with `model.insertContent`.
  */
-function getInsertMediaParent(selection: ModelSelection | ModelDocumentSelection, model: Model): ModelElement | ModelDocumentFragment {
+function getInsertIframeParent(selection: ModelSelection | ModelDocumentSelection, model: Model): ModelElement | ModelDocumentFragment {
     const insertionRange = findOptimalInsertionRange(selection, model);
     const parent = insertionRange.start.parent;
 
@@ -189,83 +185,4 @@ function getInsertMediaParent(selection: ModelSelection | ModelDocumentSelection
     }
 
     return parent;
-}
-
-/**
- * Xác định loại video hay audio sẽ chèn vào vị trí đó
- */
-/*
-function determineMediaTypeForInsertion(
-    editor: Editor,
-    selectable: ModelPosition, // | Selection | ModelDocumentSelection
-    mediaType: 'NVMediaVideo' | 'NVMediaAudio' | null
-): 'NVMediaVideo' | 'NVMediaAudio' {
-    const schema = editor.model.schema;
-
-    // Nếu chỉ định luôn thì trả về cái được chỉ định
-    if (mediaType) {
-        return mediaType;
-    }
-
-    // Đang chọn 1 đối tượng thì trả về tùy vào đối tượng đó
-    //if (selectable.is('selection')) {
-    //    return determineMediaTypeForInsertionAtSelection(schema, selectable);
-    //}
-
-    // Cuối cùng kiểm tra trong nó có audio thì chèn audio mà trong có video thì chèn video
-    return schema.checkChild(selectable, 'NVMediaAudio') ? 'NVMediaAudio' : 'NVMediaVideo';
-}
-*/
-//determineMediaTypeFromSrc
-
-/**
- * Xác định loại video hay audio sẽ chèn vào tùy thuộc vào định dạng
- */
-function determineMediaTypeFromSrc(
-    src: string,
-    mediaType: 'NVMediaVideo' | 'NVMediaAudio' | null
-): 'NVMediaVideo' | 'NVMediaAudio' {
-    if (mediaType) {
-        return mediaType;
-    }
-
-    const ext = getFileExtension(src);
-    if (extIsAudio(ext)) {
-        return 'NVMediaAudio';
-    }
-    if (extIsVideo(ext)) {
-        return 'NVMediaVideo';
-    }
-
-    return 'NVMediaVideo';
-}
-
-/**
- * Lấy phần mở rộng từ url
- */
-function getFileExtension(fileName: string): string {
-    const extensionRegExp = /\.(?<ext>[^.]+)$/;
-    const match = fileName.match(extensionRegExp);
-
-    return match!.groups!.ext.toLowerCase();
-}
-
-/**
- * Kiểm tra phần mở rộng có phải tập video hay không
- */
-function extIsVideo(ext: string): boolean {
-    const listVideoExts = [
-        'mp4', 'mov', 'webm', 'ogg', '3gp', 'mpeg'
-    ];
-    return listVideoExts.includes(ext);
-}
-
-/**
- * Kiểm tra phần mở rộng có phải tập âm thanh hay không
- */
-function extIsAudio(ext: string): boolean {
-    const listAudioExts = [
-        'mp3', 'wav', 'flac', 'aac'
-    ];
-    return listAudioExts.includes(ext);
 }

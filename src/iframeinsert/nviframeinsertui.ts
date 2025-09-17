@@ -13,15 +13,21 @@ import {
     MenuBarMenuListItemButtonView,
     Plugin,
     Locale,
-    LocaleTranslate
+    Editor
 } from 'ckeditor5';
 
 import iframeIcon from '../../theme/icons/iframe.svg';
 
 import { NVIframeFormView } from './ui/nviframeformview.js';
+import IframeUtils from '../iframeutils.js';
 
 export default class NVIframeInsertUI extends Plugin {
     private _formView: NVIframeFormView | undefined;
+
+    /**
+     * Đối tượng đang chọn có phải iframe hay không
+     */
+    declare public isIframeSelected: boolean;
 
     /**
      * @inheritDoc
@@ -33,10 +39,24 @@ export default class NVIframeInsertUI extends Plugin {
     /**
      * @inheritDoc
      */
+    public static get requires() {
+        return [IframeUtils] as const;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public init(): void {
         const editor = this.editor;
+        const selection = editor.model.document.selection;
+        const iframeUtils: IframeUtils = editor.plugins.get('IframeUtils');
 
         const componentCreator = (locale: Locale) => this._createToolbarComponent(locale);
+
+        this.set('isIframeSelected', false);
+        this.listenTo(editor.model.document, 'change', () => {
+            this.isIframeSelected = iframeUtils.isIframe(selection.getSelectedElement());
+        });
 
         editor.ui.componentFactory.add('nviframeInsert', componentCreator);
         editor.ui.componentFactory.add('insertNVIframe', componentCreator);
@@ -50,12 +70,12 @@ export default class NVIframeInsertUI extends Plugin {
     private _createDialogButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>(ButtonClass: T): InstanceType<T> {
         const editor = this.editor;
         const buttonView = new ButtonClass(editor.locale) as InstanceType<T>;
-        //const command = editor.commands.get('mediaEmbed')!;
+        const command = editor.commands.get('insertIframe')!;
         const dialogPlugin = this.editor.plugins.get('Dialog');
 
         buttonView.icon = iframeIcon;
 
-        //buttonView.bind('isEnabled').to(command, 'isEnabled');
+        buttonView.bind('isEnabled').to(command, 'isEnabled');
 
         buttonView.on('execute', () => {
             if (dialogPlugin.id === 'nviframeInsert') {
@@ -76,7 +96,11 @@ export default class NVIframeInsertUI extends Plugin {
         const button = this._createDialogButton(ButtonView);
 
         button.tooltip = true;
-        button.label = t('Insert iframe');
+        button.bind('label').to(
+            this,
+            'isIframeSelected',
+            isIframeSelected => isIframeSelected ? t('Update iframe') : t('Insert iframe')
+        );
 
         return button;
     }
@@ -87,14 +111,13 @@ export default class NVIframeInsertUI extends Plugin {
     private _showDialog() {
         const editor = this.editor;
         const dialog = editor.plugins.get('Dialog');
-        const command = editor.commands.get('mediaEmbed')!;
+        const command = editor.commands.get('insertIframe')!;
         const t = editor.locale.t;
 
-        //const isMediaSelected = command.value !== undefined;
-        const isMediaSelected = false;
+        const isIframeSelected = command.value !== undefined;
 
         if (!this._formView) {
-            this._formView = new (CssTransitionDisablerMixin(NVIframeFormView))(getFormValidators(editor.t), editor.locale);
+            this._formView = new (CssTransitionDisablerMixin(NVIframeFormView))(getFormValidators(editor), editor.locale);
             this._formView.on('submit', () => this._handleSubmitForm());
         }
 
@@ -104,13 +127,11 @@ export default class NVIframeInsertUI extends Plugin {
             content: this._formView,
             isModal: true,
             onShow: () => {
-                this._formView!.url = '';
                 this._formView!.widthType = 'fixed'; // auto
                 this._formView!.width = 600;
                 this._formView!.height = 500;
                 this._formView!.ratio = [16, 9];
-                // FIXME
-                //this._formView!.url = command.value || '';
+                this._formView!.url = command.value || '';
                 this._formView!.resetFormStatus();
                 this._formView!.urlInputView.fieldView.select();
             },
@@ -121,7 +142,7 @@ export default class NVIframeInsertUI extends Plugin {
                     onExecute: () => dialog.hide()
                 },
                 {
-                    label: isMediaSelected ? t('Save') : t('Insert'),
+                    label: isIframeSelected ? t('Save') : t('Insert'),
                     class: 'ck-button-action',
                     withText: true,
                     onExecute: () => this._handleSubmitForm()
@@ -137,9 +158,18 @@ export default class NVIframeInsertUI extends Plugin {
         const editor = this.editor;
         const dialog = editor.plugins.get('Dialog');
 
+        // Nếu form hợp lệ thì chèn iframe hoặc cập nhật iframe
         if (this._formView!.isValid()) {
+
             // FIXME
-            //editor.execute('mediaEmbed', this._formView!.url);
+            editor.execute('insertIframe', {
+                src: this._formView!.url,
+                width: this._formView!.width,
+                height: this._formView!.height,
+                type: this._formView!.widthType,
+                ratio: this._formView!.ratio
+            });
+
             dialog.hide();
             editor.editing.view.focus();
         }
@@ -152,12 +182,19 @@ export default class NVIframeInsertUI extends Plugin {
  * @param t
  * @returns
  */
-function getFormValidators(t: LocaleTranslate): Array<(v: NVIframeFormView) => boolean> {
+function getFormValidators(editor: Editor): Array<(v: NVIframeFormView) => boolean> {
+    const t = editor.locale.t;
+    const iframeUtils: IframeUtils = editor.plugins.get('IframeUtils');
+
     return [
         // Kiểm tra URL không được để trống
         form => {
             if (!form.url.length) {
                 form.urlInputView.errorText = t('The URL must not be empty.');
+                return false;
+            }
+            if (!iframeUtils.isUrl(form.url)) {
+                form.urlInputView.errorText = t('The URL is not valid.');
                 return false;
             }
             return true;

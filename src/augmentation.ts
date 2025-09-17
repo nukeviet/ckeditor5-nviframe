@@ -13,25 +13,26 @@ import type {
 	NVIframeInsertUI,
 	InsertIframeCommand,
 	ReplaceIframeSourceCommand,
+	IframeConfig,
 	IframeEditing,
 	IframeUtils
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
-	// interface EditorConfig {
-	// 	/**
-	// 	 *
-	// 	 */
-	// 	nvbox?: NVBoxConfig;
-	// }
+	interface EditorConfig {
+		/**
+		 *
+		 */
+		iframe?: IframeConfig;
+	}
 
 	// Khai báo các plugin
 	interface PluginsMap {
 		[NVIframe.pluginName]: NVIframe;
 		[NVIframeInsert.pluginName]: NVIframeInsert;
 		[NVIframeInsertUI.pluginName]: NVIframeInsertUI;
-		[IframeEditing.pluginName]: IframeEditing;
 		[IframeUtils.pluginName]: IframeUtils;
+		[IframeEditing.pluginName]: IframeEditing;
 	}
 
 	// Khai báo các command
