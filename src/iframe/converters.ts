@@ -18,26 +18,48 @@ import { first, type GetCallback } from 'ckeditor5';
 import type IframeUtils from '../iframeutils.js';
 
 /**
+ * Chuyển đổi thuộc tính iframe từ model sang view editing và data
  *
+ * @param iframeUtils
+ * @param attributeKeys
+ * @returns
  */
-export function downcastIframeAttribute(
-	iframeUtils: IframeUtils,
-	attributeKey: string
-): (dispatcher: DowncastDispatcher) => void {
-	const converter: GetCallback<DowncastAttributeEvent<ModelElement>> = (evt, data, conversionApi) => {
-		if (!conversionApi.consumable.consume(data.item, evt.name)) {
-			return;
-		}
-
-		const viewWriter = conversionApi.writer;
-		const element = conversionApi.mapper.toViewElement(data.item)!;
-		const iframe = iframeUtils.findViewIframeElement(element)!;
-
-		viewWriter.setAttribute(data.attributeKey, data.attributeNewValue || '', iframe);
-	};
-
+export function downcastIframeAttribute(iframeUtils: IframeUtils, attributeKeys: string[]): (dispatcher: DowncastDispatcher) => void {
 	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<ModelElement>>(`attribute:${attributeKey}:iframe`, converter);
+		for (const attributeKey of attributeKeys) {
+			dispatcher.on<DowncastAttributeEvent<ModelElement>>(`attribute:${attributeKey}:iframe`, (evt, data, conversionApi) => {
+				if (!conversionApi.consumable.consume(data.item, evt.name)) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const element = conversionApi.mapper.toViewElement(data.item)!;
+				if (!element) {
+					return;
+				}
+
+				const divOuter = iframeUtils.findViewOuterIframeElement(element)!;
+				const divInner = iframeUtils.findViewInnerIframeElement(element)!;
+				const iframe = iframeUtils.findViewIframeElement(element)!;
+				const modelElement = data.item;
+
+				if (data.attributeKey == 'type' && data.attributeNewValue == 'fixed') {
+					// Cố định thì iframe mới có width và height
+					viewWriter.setAttribute('width', modelElement.getAttribute('width') || '600', iframe);
+					viewWriter.setAttribute('height', modelElement.getAttribute('height') || '500', iframe);
+				}
+
+				if (
+					data.attributeKey == 'ratio' || data.attributeKey == 'width' ||
+					data.attributeKey == 'height' || data.attributeKey == 'type'
+				) {
+					viewWriter.setAttribute(`data-iframe-${data.attributeKey}`, data.attributeKey == 'ratio' ? (data.attributeNewValue as number[]).join(':') : data.attributeNewValue, divOuter);
+					return;
+				}
+
+				viewWriter.setAttribute(data.attributeKey, data.attributeNewValue || '', iframe);
+			});
+		}
 	};
 }
 

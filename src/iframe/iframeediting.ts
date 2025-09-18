@@ -72,8 +72,11 @@ export default class IframeEditing extends Plugin {
 			});
 
 		// Model => attribute cho cả data và editing
-		conversion.for('downcast')
-			.add(downcastIframeAttribute(iframeUtils, 'src'));
+		conversion.for('downcast').add(downcastIframeAttribute(iframeUtils, [
+			'src', 'width', 'height', 'allow',
+			'allowfullscreen', 'referrerpolicy',
+			'sandbox', 'srcdoc', 'type', 'ratio'
+		]));
 
 		// div.nv-iframe => model
 		conversion.for('upcast')

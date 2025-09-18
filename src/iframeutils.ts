@@ -126,6 +126,22 @@ export default class IframeUtils extends Plugin {
         }
     }
 
+    public findViewOuterIframeElement(divView: ViewElement): ViewElement | undefined {
+        if (divView.is('element', 'div') && divView.hasClass('nv-iframe')) {
+            return divView;
+        }
+    }
+
+    public findViewInnerIframeElement(divView: ViewElement): ViewElement | undefined {
+        const editingView = this.editor.editing.view;
+
+        for (const { item } of editingView.createRangeIn(divView)) {
+            if (!!item && item.is('element', 'div') && item.hasClass('nv-iframe-inner')) {
+                return item as ViewElement;
+            }
+        }
+    }
+
     /**
      * Xác định đối tượng ViewElement có phải là iframe không
      */
