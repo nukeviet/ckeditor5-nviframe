@@ -20,6 +20,10 @@ import type { ModelWriter, ModelElement } from 'ckeditor5';
  */
 export default class ReplaceIframeSourceCommand extends Command {
     declare public value: string | null;
+    declare public type: 'auto' | 'fixed';
+    declare public width: number | null;
+    declare public height: number | null;
+    declare public ratio: [number, number] | null;
 
     constructor(editor: Editor) {
         super(editor);
@@ -37,6 +41,10 @@ export default class ReplaceIframeSourceCommand extends Command {
 
         this.isEnabled = iframeUtils.isIframe(element);
         this.value = this.isEnabled ? element.getAttribute('src') as string : null;
+        this.type = this.isEnabled ? element.getAttribute('type') as 'auto' | 'fixed' : 'auto';
+        this.width = this.isEnabled ? element.getAttribute('width') as number : null;
+        this.height = this.isEnabled ? element.getAttribute('height') as number : null;
+        this.ratio = this.isEnabled ? element.getAttribute('ratio') as [number, number] : null;
     }
 
     /**

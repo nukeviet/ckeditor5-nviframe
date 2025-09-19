@@ -78,7 +78,7 @@ export default class IframeEditing extends Plugin {
 			'sandbox', 'srcdoc', 'type', 'ratio'
 		]));
 
-		// div.nvck-iframe => model
+		// div.nvck-iframe => model (sau đó để hiển thị ra lại dùng editingDowncast + downcast)
 		conversion.for('upcast').add(upcastIframeDivStructure(iframeUtils));
 	}
 }

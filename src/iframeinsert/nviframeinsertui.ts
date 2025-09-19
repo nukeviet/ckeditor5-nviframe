@@ -111,10 +111,10 @@ export default class NVIframeInsertUI extends Plugin {
     private _showDialog() {
         const editor = this.editor;
         const dialog = editor.plugins.get('Dialog');
-        const command = editor.commands.get('insertIframe')!;
+        const command = editor.commands.get('replaceIframeSource')!;
         const t = editor.locale.t;
 
-        const isIframeSelected = command.value !== undefined;
+        const isIframeSelected = command.isEnabled;
 
         if (!this._formView) {
             this._formView = new (CssTransitionDisablerMixin(NVIframeFormView))(getFormValidators(editor), editor.locale);
@@ -127,10 +127,10 @@ export default class NVIframeInsertUI extends Plugin {
             content: this._formView,
             isModal: true,
             onShow: () => {
-                this._formView!.widthType = 'fixed'; // auto
-                this._formView!.width = 600;
-                this._formView!.height = 500;
-                this._formView!.ratio = [16, 9];
+                this._formView!.widthType = command.type || 'auto';
+                this._formView!.width = command.width || 600;
+                this._formView!.height = command.height || 500;
+                this._formView!.ratio = command.ratio || [16, 9];
                 this._formView!.url = command.value || '';
                 this._formView!.resetFormStatus();
                 this._formView!.urlInputView.fieldView.select();
@@ -160,8 +160,6 @@ export default class NVIframeInsertUI extends Plugin {
 
         // Nếu form hợp lệ thì chèn iframe hoặc cập nhật iframe
         if (this._formView!.isValid()) {
-
-            // FIXME
             editor.execute('insertIframe', {
                 src: this._formView!.url,
                 width: this._formView!.width,
