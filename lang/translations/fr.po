@@ -82,3 +82,7 @@ msgstr "Mettre à jour l'iframe"
 msgctxt "Iframe widget"
 msgid "Iframe widget"
 msgstr "Widget Iframe"
+
+msgctxt "The URL is not valid."
+msgid "The URL is not valid."
+msgstr "L'URL n'est pas valide."

@@ -82,3 +82,7 @@ msgstr "Cập nhật iframe"
 msgctxt "Iframe widget"
 msgid "Iframe widget"
 msgstr "Widget iframe"
+
+msgctxt "The URL is not valid."
+msgid "The URL is not valid."
+msgstr "URL không hợp lệ."

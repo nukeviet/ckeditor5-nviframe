@@ -126,12 +126,15 @@ export default class NVIframeInsertUI extends Plugin {
             title: t('Insert iframe'),
             content: this._formView,
             isModal: true,
+            onHide: () => {
+                this._formView!.url = '???';
+            },
             onShow: () => {
-                this._formView!.widthType = command.type || 'auto';
-                this._formView!.width = command.width || 600;
-                this._formView!.height = command.height || 500;
-                this._formView!.ratio = command.ratio || [16, 9];
-                this._formView!.url = command.value || '';
+                this._formView!.widthType = command.isEnabled ? (command.type || 'auto') : 'auto';
+                this._formView!.width = command.isEnabled ? (command.width || 600) : 600;
+                this._formView!.height = command.isEnabled ? (command.height || 500) : 500;
+                this._formView!.ratio = command.isEnabled ? (command.ratio || [16, 9]) : [16, 9];
+                this._formView!.url = command.isEnabled ? (command.value || '') : '';
                 this._formView!.resetFormStatus();
                 this._formView!.urlInputView.fieldView.select();
             },
