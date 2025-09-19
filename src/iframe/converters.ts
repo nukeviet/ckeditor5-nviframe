@@ -39,14 +39,24 @@ export function downcastIframeAttribute(iframeUtils: IframeUtils, attributeKeys:
 				}
 
 				const divOuter = iframeUtils.findViewOuterIframeElement(element)!;
-				const divInner = iframeUtils.findViewInnerIframeElement(element)!;
+				//const divInner = iframeUtils.findViewInnerIframeElement(element)!;
 				const iframe = iframeUtils.findViewIframeElement(element)!;
 				const modelElement = data.item;
 
-				if (data.attributeKey == 'type' && data.attributeNewValue == 'fixed') {
-					// Cố định thì iframe mới có width và height
-					viewWriter.setAttribute('width', modelElement.getAttribute('width') || '600', iframe);
-					viewWriter.setAttribute('height', modelElement.getAttribute('height') || '500', iframe);
+				if (data.attributeKey == 'type') {
+					if (data.attributeNewValue == 'fixed') {
+						// Cố định thì iframe mới có width và height
+						viewWriter.setAttribute('width', modelElement.getAttribute('width') || '600', iframe);
+						viewWriter.setAttribute('height', modelElement.getAttribute('height') || '500', iframe);
+
+						viewWriter.removeClass('nvck-iframe-responsive', divOuter);
+						viewWriter.removeStyle('padding-bottom', divOuter);
+					} else {
+						viewWriter.addClass('nvck-iframe-responsive', divOuter);
+
+						const paddingBottom = (((modelElement.getAttribute('ratio') as number[])[1] / (modelElement.getAttribute('ratio') as number[])[0]) * 100).toFixed(2);
+						viewWriter.setStyle('padding-bottom', `${paddingBottom}%`, divOuter);
+					}
 				}
 
 				if (
@@ -64,40 +74,78 @@ export function downcastIframeAttribute(iframeUtils: IframeUtils, attributeKeys:
 }
 
 /**
- *
+ * Chuyển đổi cấu trúc thẻ div.nvck-iframe trong view thành model iframe
  */
-export function upcastIframeDiv(iframeUtils: IframeUtils): (dispatcher: UpcastDispatcher) => void {
+export function upcastIframeDivStructure(iframeUtils: IframeUtils): (dispatcher: UpcastDispatcher) => void {
 	const converter: GetCallback<UpcastElementEvent> = (evt, data, conversionApi) => {
-		// Không chuyển đổi nếu thẻ không phải là div.nv-iframe
-		if (!conversionApi.consumable.test(data.viewItem, { name: true, classes: 'nv-iframe' })) {
+		const viewDiv = data.viewItem;
+		const viewInner = iframeUtils.findViewInnerIframeElement(viewDiv);
+		const viewIframe = iframeUtils.findViewIframeElement(viewDiv);
+
+		// Kiểm tra và consume div.nvck-iframe
+		if (!viewDiv.hasClass('nvck-iframe') || !conversionApi.consumable.consume(viewDiv, { name: true, classes: 'nvck-iframe' })) {
 			return;
 		}
 
-		// Tìm thẻ iframe trong div
-		const viewIframe = iframeUtils.findViewIframeElement(data.viewItem);
+		const { writer: modelWriter } = conversionApi;
 
-		// Không chuyển đổi nếu không tìm thấy thẻ iframe hoặc nó đã chuyển đổi
-		if (!viewIframe || !conversionApi.consumable.test(viewIframe, { name: true })) {
-			return;
+		// Tạo model iframe
+		const modelBox = modelWriter.createElement('iframe');
+		conversionApi.writer.insert(modelBox, data.modelCursor);
+
+		if (viewInner && conversionApi.consumable.test(viewInner, { name: true })) {
+			// Consume để ngăn converter khác
+			conversionApi.consumable.consume(viewInner, { name: true });
+
+			if (viewIframe && conversionApi.consumable.test(viewIframe, { name: true })) {
+				// Consume iframe
+				conversionApi.consumable.consume(viewIframe, { name: true });
+			}
 		}
 
-		// Consume the div to prevent other converters from processing it again.
-		conversionApi.consumable.consume(data.viewItem, { name: true, classes: 'nv-iframe' });
+		// Lấy các attribute của wrapper div
+		let width = parseInt(viewDiv.getAttribute('data-iframe-width') || '');
+		let height = parseInt(viewDiv.getAttribute('data-iframe-height') || '');
+		let type = viewDiv.getAttribute('data-iframe-type') || '';
+		let ratio = viewDiv.getAttribute('data-iframe-ratio') || '';
+		let url = viewIframe ? (viewIframe.getAttribute('src') || '') : '';
 
-		// Convert view iframe to model.
-		const conversionResult = conversionApi.convertItem(viewIframe, data.modelCursor);
+		if (isNaN(width) || width <= 0 || width > 9999) {
+			width = 600;
+		}
+		if (isNaN(height) || height <= 0 || height > 9999) {
+			height = 500;
+		}
+		if (type != 'fixed' && type != 'auto') {
+			type = 'auto';
+		}
+		let ratioArr: [number, number];
+		const match = ratio.match(/^(\d+):(\d+)$/);
+		if (match) {
+			const x = parseInt(match[1], 10);
+			const y = parseInt(match[2], 10);
 
-		// Lấy model được chuyển đổi
-		const modelIframe = first(conversionResult.modelRange!.getItems()) as ModelElement;
-
-		// Chuyển không thành công thì dừng
-		if (!modelIframe) {
-			conversionApi.consumable.revert(data.viewItem, { name: true, classes: 'nv-iframe' });
-			return;
+			// Kiểm tra > 0
+			if (x > 0 && y > 0) {
+				ratioArr = [x, y];
+			} else {
+				ratioArr = [16, 9];
+			}
+		} else {
+			ratioArr = [16, 9];
 		}
 
-		conversionApi.convertChildren(data.viewItem, modelIframe);
-		conversionApi.updateConversionResult(modelIframe, data);
+		modelWriter.setAttribute('src', url, modelBox);
+		modelWriter.setAttribute('type', type, modelBox);
+		modelWriter.setAttribute('width', width, modelBox);
+		modelWriter.setAttribute('height', height, modelBox);
+		modelWriter.setAttribute('ratio', ratioArr, modelBox);
+
+		data.modelRange = modelWriter.createRangeOn(modelBox);
+		data.modelCursor = data.modelRange.end;
+
+		conversionApi.convertChildren(data.viewItem, modelBox);
+		conversionApi.updateConversionResult(modelBox, data);
 	};
 
 	return dispatcher => {

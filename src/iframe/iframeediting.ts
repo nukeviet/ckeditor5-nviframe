@@ -13,8 +13,8 @@ import { Plugin } from 'ckeditor5';
 import InsertIframeCommand from './insertiframecommand.js';
 import ReplaceIframeSourceCommand from './replaceiframesourcecommand.js';
 import IframeUtils from '../iframeutils.js';
-import { createIframeViewElement, getIframeViewElementMatcher } from './utils.js';
-import { downcastIframeAttribute, upcastIframeDiv } from './converters.js';
+import { createIframeViewElement } from './utils.js';
+import { downcastIframeAttribute, upcastIframeDivStructure } from './converters.js';
 
 export default class IframeEditing extends Plugin {
 	/**
@@ -55,14 +55,14 @@ export default class IframeEditing extends Plugin {
 		const conversion = editor.conversion;
 		const iframeUtils: IframeUtils = this.editor.plugins.get('IframeUtils');
 
-		// Model => cấu trúc div.nv-iframe cho .getData() - submit form
+		// Model => cấu trúc div.nvck-iframe cho .getData() - submit form
 		conversion.for('dataDowncast')
 			.elementToStructure({
 				model: 'iframe',
 				view: (modelElement, { writer }) => createIframeViewElement(writer)
 			});
 
-		// Model => cấu trúc div.nv-iframe cho editing view - hiển thị trong trình soạn thảo
+		// Model => cấu trúc div.nvck-iframe cho editing view - hiển thị trong trình soạn thảo
 		conversion.for('editingDowncast')
 			.elementToStructure({
 				model: 'iframe',
@@ -78,15 +78,7 @@ export default class IframeEditing extends Plugin {
 			'sandbox', 'srcdoc', 'type', 'ratio'
 		]));
 
-		// div.nv-iframe => model
-		conversion.for('upcast')
-			.elementToElement({
-				view: getIframeViewElementMatcher(editor),
-				model: (viewIframe, { writer }) => writer.createElement(
-					'iframe',
-					viewIframe.hasAttribute('src') ? { src: viewIframe.getAttribute('src') } : undefined
-				)
-			})
-			.add(upcastIframeDiv(iframeUtils));
+		// div.nvck-iframe => model
+		conversion.for('upcast').add(upcastIframeDivStructure(iframeUtils));
 	}
 }

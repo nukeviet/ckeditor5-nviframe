@@ -127,7 +127,7 @@ export default class IframeUtils extends Plugin {
     }
 
     public findViewOuterIframeElement(divView: ViewElement): ViewElement | undefined {
-        if (divView.is('element', 'div') && divView.hasClass('nv-iframe')) {
+        if (divView.is('element', 'div') && divView.hasClass('nvck-iframe')) {
             return divView;
         }
     }
@@ -136,7 +136,7 @@ export default class IframeUtils extends Plugin {
         const editingView = this.editor.editing.view;
 
         for (const { item } of editingView.createRangeIn(divView)) {
-            if (!!item && item.is('element', 'div') && item.hasClass('nv-iframe-inner')) {
+            if (!!item && item.is('element', 'div') && item.hasClass('nvck-iframe-inner')) {
                 return item as ViewElement;
             }
         }
@@ -150,7 +150,7 @@ export default class IframeUtils extends Plugin {
     }
 
     public isBlockIframeView(element?: ViewElement | null): boolean {
-        return !!element && element.is('element', 'div') && element.hasClass('nv-iframe');
+        return !!element && element.is('element', 'div') && element.hasClass('nvck-iframe');
     }
 
     /**
