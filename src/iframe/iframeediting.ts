@@ -14,7 +14,7 @@ import InsertIframeCommand from './insertiframecommand.js';
 import ReplaceIframeSourceCommand from './replaceiframesourcecommand.js';
 import IframeUtils from '../iframeutils.js';
 import { createIframeViewElement } from './utils.js';
-import { downcastIframeAttribute, upcastIframeDivStructure } from './converters.js';
+import { downcastIframeAttribute, upcastIframeDivStructure, upcastPlainIframe } from './converters.js';
 
 export default class IframeEditing extends Plugin {
 	/**
@@ -79,6 +79,8 @@ export default class IframeEditing extends Plugin {
 		]));
 
 		// div.nvck-iframe => model (sau đó để hiển thị ra lại dùng editingDowncast + downcast)
-		conversion.for('upcast').add(upcastIframeDivStructure(iframeUtils, editor));
+		conversion.for('upcast')
+			.add(upcastIframeDivStructure(iframeUtils, editor)) // Upcast cấu trúc div.nvck-iframe
+			.add(upcastPlainIframe(iframeUtils, editor)); // Upcast thẻ iframe đơn thuần về cấu trúc div.nvck-iframe
 	}
 }

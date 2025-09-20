@@ -128,8 +128,8 @@ export default class NVIframeInsertUI extends Plugin {
             isModal: true,
             onShow: () => {
                 this._formView!.widthType = command.isEnabled ? (command.type || 'auto') : 'auto';
-                this._formView!.width = command.isEnabled ? (command.width || 600) : 600;
-                this._formView!.height = command.isEnabled ? (command.height || 500) : 500;
+                this._formView!.width = command.isEnabled ? (command.width || 560) : 560;
+                this._formView!.height = command.isEnabled ? (command.height || 315) : 315;
                 this._formView!.ratio = command.isEnabled ? (command.ratio || [16, 9]) : [16, 9];
                 this._formView!.url = command.isEnabled ? (command.value || '') : '';
                 this._formView!.resetFormStatus();

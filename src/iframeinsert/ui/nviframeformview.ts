@@ -134,8 +134,8 @@ export class NVIframeFormView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		this.set('iframeURLInputValue', '');
-		this.set('iframeHeightInputValue', 500);
-		this.set('iframeWidthInputValue', 600);
+		this.set('iframeHeightInputValue', 315);
+		this.set('iframeWidthInputValue', 560);
 		this.set('iframeRatioInputValue', [16, 9]);
 		this.set('iframeTypeWidthValue', 'auto');
 
@@ -434,13 +434,13 @@ export class NVIframeFormView extends View {
 			// Trường hợp đổi sang tự động mà chiều rộng hoặc chiều cao lỗi thì đặt nó làm mặc định
 			if (this.iframeTypeWidthValue === 'auto') {
 				if (this.width <= 0 || isNaN(this.width)) {
-					this.widthInputView.fieldView.set('value', '600');
-					this.widthInputView.fieldView.element!.value = '600';
+					this.widthInputView.fieldView.set('value', '560');
+					this.widthInputView.fieldView.element!.value = '560';
 					this.widthInputView.fieldView.isEmpty = false;
 				}
 				if (this.height <= 0 || isNaN(this.height)) {
-					this.heightInputView.fieldView.set('value', '500');
-					this.heightInputView.fieldView.element!.value = '500';
+					this.heightInputView.fieldView.set('value', '315');
+					this.heightInputView.fieldView.element!.value = '315';
 					this.heightInputView.fieldView.isEmpty = false;
 				}
 			} else {

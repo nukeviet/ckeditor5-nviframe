@@ -24,8 +24,8 @@ export type IframeExecuteCommandOptions = {
 export function getDefaultIframeExecuteCommandOptions(): IframeExecuteCommandOptions {
     return {
         src: '',
-        width: 600,
-        height: 500,
+        width: 560,
+        height: 315,
         type: 'auto',
         ratio: [16, 9]
     };

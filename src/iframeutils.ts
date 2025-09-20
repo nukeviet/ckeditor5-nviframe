@@ -167,6 +167,27 @@ export default class IframeUtils extends Plugin {
         const urlPattern = /^(https?:\/\/[^\s]+)/;
         return urlPattern.test(url);
     }
+
+    /**
+     * Kiểm tra xem phần tử view có nằm trong iframe hay không
+     * @param viewElement Phần tử view cần kiểm tra
+     * @returns
+     */
+    public isViewInsideIframe(viewElement: ViewElement): boolean {
+        // Cha cấp 1 (phải là div.nvck-iframe-inner)
+        const parent1 = viewElement.parent as ViewElement | null;
+        if (!parent1 || !parent1.is('element', 'div') || !parent1.hasClass('nvck-iframe-inner')) {
+            return false;
+        }
+
+        // Cha cấp 2 (phải là div.nvck-iframe)
+        const parent2 = parent1.parent as ViewElement | null;
+        if (!parent2 || !parent2.is('element', 'div') || !parent2.hasClass('nvck-iframe')) {
+            return false;
+        }
+
+        return true;
+    }
 }
 
 /**
