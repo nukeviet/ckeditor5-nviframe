@@ -8,14 +8,9 @@
  */
 
 import type {
-	Editor,
-	MatcherPattern,
 	ViewContainerElement,
-	ViewDowncastWriter,
-	ViewElement
+	ViewDowncastWriter
 } from 'ckeditor5';
-import { first } from 'ckeditor5';
-import IframeUtils from '../iframeutils.js';
 
 /**
  * Tạo phần tử view cho model iframe

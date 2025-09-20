@@ -79,6 +79,6 @@ export default class IframeEditing extends Plugin {
 		]));
 
 		// div.nvck-iframe => model (sau đó để hiển thị ra lại dùng editingDowncast + downcast)
-		conversion.for('upcast').add(upcastIframeDivStructure(iframeUtils));
+		conversion.for('upcast').add(upcastIframeDivStructure(iframeUtils, editor));
 	}
 }

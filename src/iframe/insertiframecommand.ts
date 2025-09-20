@@ -49,6 +49,7 @@ export default class InsertIframeCommand extends Command {
 
         const selection = this.editor.model.document.selection;
         const selectionAttributes = Object.fromEntries(selection.getAttributes());
-        iframeUtils.insertIframe({ ...options, ...selectionAttributes });
+        const config = this.editor.config.get('iframe.attributes')!;
+        iframeUtils.insertIframe({ ...config, ...options, ...selectionAttributes });
     }
 }

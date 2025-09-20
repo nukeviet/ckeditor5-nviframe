@@ -10,6 +10,7 @@
 import type {
 	DowncastDispatcher,
 	ModelElement,
+	Editor,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	DowncastAttributeEvent
@@ -76,14 +77,19 @@ export function downcastIframeAttribute(iframeUtils: IframeUtils, attributeKeys:
 /**
  * Chuyển đổi cấu trúc thẻ div.nvck-iframe trong view thành model iframe
  */
-export function upcastIframeDivStructure(iframeUtils: IframeUtils): (dispatcher: UpcastDispatcher) => void {
+export function upcastIframeDivStructure(iframeUtils: IframeUtils, editor: Editor): (dispatcher: UpcastDispatcher) => void {
 	const converter: GetCallback<UpcastElementEvent> = (evt, data, conversionApi) => {
 		const viewDiv = data.viewItem;
 		const viewInner = iframeUtils.findViewInnerIframeElement(viewDiv);
 		const viewIframe = iframeUtils.findViewIframeElement(viewDiv);
 
 		// Kiểm tra và consume div.nvck-iframe
-		if (!viewDiv.hasClass('nvck-iframe') || !conversionApi.consumable.consume(viewDiv, { name: true, classes: 'nvck-iframe' })) {
+		if (
+			!viewDiv.hasClass('nvck-iframe') ||
+			!conversionApi.consumable.consume(viewDiv, { name: true, classes: 'nvck-iframe' }) ||
+			!viewInner || !conversionApi.consumable.consume(viewInner, { name: true, classes: 'nvck-iframe-inner' }) ||
+			!viewIframe || !conversionApi.consumable.consume(viewIframe, { name: true, classes: 'nvck-iframe-element' })
+		) {
 			return;
 		}
 
@@ -140,6 +146,22 @@ export function upcastIframeDivStructure(iframeUtils: IframeUtils): (dispatcher:
 		modelWriter.setAttribute('width', width, modelBox);
 		modelWriter.setAttribute('height', height, modelBox);
 		modelWriter.setAttribute('ratio', ratioArr, modelBox);
+
+		// Các attribute iframe
+		const config = editor.config.get('iframe.attributes')!;
+		const sandbox = viewIframe.getAttribute('sandbox') || '';
+		const allow = viewIframe.getAttribute('allow') || '';
+		const referrerPolicy = viewIframe.getAttribute('referrerpolicy') || '';
+		const allowFullscreen = viewIframe.getAttribute('allowfullscreen') || '';
+		const frameborder = viewIframe.getAttribute('frameborder') || '';
+		if (sandbox) config.sandbox = sandbox;
+		if (allow) config.allow = allow;
+		if (referrerPolicy) config.referrerpolicy = referrerPolicy;
+		if (allowFullscreen) config.allowfullscreen = (allowFullscreen == 'true' || allowFullscreen == '1') ? true : false;
+		if (frameborder) config.frameborder = frameborder;
+		for (const [key, val] of Object.entries(config)) {
+			modelWriter.setAttribute(key, val, modelBox);
+		}
 
 		data.modelRange = modelWriter.createRangeOn(modelBox);
 		data.modelCursor = data.modelRange.end;
