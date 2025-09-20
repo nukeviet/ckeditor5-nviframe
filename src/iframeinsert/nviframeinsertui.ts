@@ -9,16 +9,22 @@
 
 import {
     ButtonView,
+    DropdownView,
+    FocusableView,
     CssTransitionDisablerMixin,
+    createDropdown,
     MenuBarMenuListItemButtonView,
     Plugin,
     Locale,
-    Editor
+    Editor,
+    SplitButtonView
 } from 'ckeditor5';
 
 import iframeIcon from '../../theme/icons/iframe.svg';
+import youtubeIcon from '../../theme/icons/youtube.svg';
 
 import { NVIframeFormView } from './ui/nviframeformview.js';
+import NVIframeYoutubeFormView from './ui/nviframeyoutubeformview.js';
 import IframeUtils from '../iframeutils.js';
 
 export default class NVIframeInsertUI extends Plugin {
@@ -91,9 +97,11 @@ export default class NVIframeInsertUI extends Plugin {
     /**
      * Thiết lập nút chèn iframe
      */
-    private _createToolbarComponent(locale: Locale): ButtonView {
+    private _createToolbarComponent(locale: Locale): DropdownView | FocusableView {
         const t = locale.t;
         const button = this._createDialogButton(ButtonView);
+        const command = this.editor.commands.get('insertIframe')!;
+        const commandEdit = this.editor.commands.get('replaceIframeSource')!;
 
         button.tooltip = true;
         button.bind('label').to(
@@ -102,7 +110,27 @@ export default class NVIframeInsertUI extends Plugin {
             isIframeSelected => isIframeSelected ? t('Update iframe') : t('Insert iframe')
         );
 
-        return button;
+        const dropdownButton: SplitButtonView = new SplitButtonView(locale, button);
+        const dropdownView = createDropdown(locale, dropdownButton);
+
+        dropdownView.bind('isEnabled').to(command, 'isEnabled');
+
+        // Menu dropdown
+        const dropdownViewButtonItem = new ButtonView(locale);
+        dropdownViewButtonItem.icon = youtubeIcon;
+        dropdownViewButtonItem.withText = true;
+        dropdownViewButtonItem.bind('label').to(
+            commandEdit,
+            'isEnabled',
+            isEnabled => isEnabled ? t('Cập nhật video Youtube') : t('Chèn video Youtube')
+        );
+        dropdownViewButtonItem.on('execute', () => {
+            // FIXME
+            console.log('Menu item clicked!');
+        });
+        dropdownView.panelView.children.add(dropdownViewButtonItem);
+
+        return dropdownView;
     }
 
     /**
@@ -123,7 +151,7 @@ export default class NVIframeInsertUI extends Plugin {
 
         dialog.show({
             id: 'nviframeInsert',
-            title: t('Insert iframe'),
+            title: isIframeSelected ? t('Update iframe') : t('Insert iframe'),
             content: this._formView,
             isModal: true,
             onShow: () => {
