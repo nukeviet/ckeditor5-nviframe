@@ -56,6 +56,8 @@ export default class IframeUtils extends Plugin {
             }
         }
 
+        attributes.src = autoProcessSrc(attributes.src as string);
+
         // Chèn model vào
         return model.change(writer => {
             const iframeElement = writer.createElement('iframe', attributes);
@@ -222,4 +224,113 @@ function getInsertIframeParent(selection: ModelSelection | ModelDocumentSelectio
     }
 
     return parent;
+}
+
+/**
+ * Chuẩn hóa URL video về dạng EMBED
+ * (Nếu đã là embed thì giữ nguyên)
+ */
+function autoProcessSrc(url: string): string {
+    const providers: {
+        name: string;
+        patterns: RegExp[];
+        toEmbed: (id: string, match: RegExpExecArray) => string;
+    }[] = [
+            // 🟥 YouTube
+            {
+                name: 'youtube',
+                patterns: [
+                    // https://www.youtube.com/watch?v=ID
+                    /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/i,
+                    // https://youtu.be/ID
+                    /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/i,
+                    // https://www.youtube.com/shorts/ID
+                    /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/i,
+                    // https://www.youtube.com/embed/ID (đã embed)
+                    /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/i
+                ],
+                toEmbed: (id, match) => {
+                    // Nếu match từ /embed/ thì giữ nguyên (coi như đã embed)
+                    if (/embed/.test(match[0])) return url;
+                    return `https://www.youtube.com/embed/${id}`;
+                }
+            },
+
+            // 🟦 Vimeo
+            {
+                name: 'vimeo',
+                patterns: [
+                    // https://vimeo.com/123456789
+                    /(?:vimeo\.com\/)(\d+)/i,
+                    // https://player.vimeo.com/video/123456789
+                    /(?:player\.vimeo\.com\/video\/)(\d+)/i
+                ],
+                toEmbed: (id, match) => {
+                    if (/player\.vimeo/.test(match[0])) return url;
+                    return `https://player.vimeo.com/video/${id}`;
+                }
+            },
+
+            // 🟩 Facebook (public video)
+            {
+                name: 'facebook',
+                patterns: [
+                    // https://www.facebook.com/.../videos/123456789/
+                    /facebook\.com\/(?:.+)\/videos\/(\d+)/i,
+                    // https://fb.watch/abcXYZ/
+                    /fb\.watch\/([a-zA-Z0-9_-]+)/i
+                ],
+                toEmbed: (id, match) => {
+                    // Facebook embed yêu cầu full URL encode
+                    // Với dạng videos/ID:
+                    if (/videos/.test(match[0])) {
+                        return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}`;
+                    }
+                    // Với dạng fb.watch/ -> vẫn cần full URL
+                    return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}`;
+                }
+            },
+
+            // 🟧 TikTok
+            {
+                name: 'tiktok',
+                patterns: [
+                    // https://www.tiktok.com/@username/video/1234567890123456789
+                    /tiktok\.com\/@[\w.-]+\/video\/(\d+)/i,
+                    // https://www.tiktok.com/embed/1234567890123456789
+                    /tiktok\.com\/embed\/(\d+)/i
+                ],
+                toEmbed: (id, match) =>
+                    /embed/.test(match[0])
+                        ? url
+                        : `https://www.tiktok.com/embed/${id}`
+            },
+
+            // 🟪 Dailymotion
+            {
+                name: 'dailymotion',
+                patterns: [
+                    // https://www.dailymotion.com/video/x7xyzab
+                    /dailymotion\.com\/video\/([a-zA-Z0-9]+)/i,
+                    // https://www.dailymotion.com/embed/video/x7xyzab
+                    /dailymotion\.com\/embed\/video\/([a-zA-Z0-9]+)/i
+                ],
+                toEmbed: (id, match) =>
+                    /embed/.test(match[0])
+                        ? url
+                        : `https://www.dailymotion.com/embed/video/${id}`
+            }
+        ];
+
+    for (const p of providers) {
+        for (const pattern of p.patterns) {
+            const m = pattern.exec(url);
+            if (m && m[1]) {
+                return p.toEmbed(m[1], m);
+            }
+        }
+    }
+
+    // Không khớp nhà cung cấp nào: trả nguyên URL
+    return url;
 }
