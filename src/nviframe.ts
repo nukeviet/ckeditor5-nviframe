@@ -14,17 +14,17 @@ import NVIframeInsertUI from './iframeinsert/nviframeinsertui.js';
 import '../theme/iframe.css';
 
 export default class NVIframe extends Plugin {
-    /**
+	/**
      * @inheritDoc
      */
-    static get pluginName() {
-        return 'NVIframe' as const;
-    }
+	public static get pluginName() {
+		return 'NVIframe' as const;
+	}
 
-    /**
+	/**
      * @inheritDoc
      */
-    static get requires() {
-        return [IframeEditing, NVIframeInsertUI] as const;
-    }
+	public static get requires() {
+		return [ IframeEditing, NVIframeInsertUI ] as const;
+	}
 }

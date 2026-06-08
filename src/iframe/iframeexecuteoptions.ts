@@ -11,22 +11,22 @@
  * Options khi thực thi lệnh chèn iframe
  */
 export type IframeExecuteCommandOptions = {
-    src: string;
-    width?: number | null;
-    height?: number | null;
-    type?: 'auto' | 'fixed' | null;
-    ratio?: [number, number] | null;
+	src: string;
+	width?: number | null;
+	height?: number | null;
+	type?: 'auto' | 'fixed' | null;
+	ratio?: [number, number] | null;
 };
 
 /**
  * @returns Các giá trị mặc định khi thực thi lệnh chèn iframe
  */
 export function getDefaultIframeExecuteCommandOptions(): IframeExecuteCommandOptions {
-    return {
-        src: '',
-        width: 560,
-        height: 315,
-        type: 'auto',
-        ratio: [16, 9]
-    };
+	return {
+		src: '',
+		width: 560,
+		height: 315,
+		type: 'auto',
+		ratio: [ 16, 9 ]
+	};
 }

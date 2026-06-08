@@ -11,17 +11,17 @@ import { Plugin } from 'ckeditor5';
 import NVIframeInsertUI from './iframeinsert/nviframeinsertui.js';
 
 export default class NVIframeInsert extends Plugin {
-    /**
+	/**
      * @inheritDoc
      */
-    static get pluginName() {
-        return 'NVIframeInsert' as const;
-    }
+	public static get pluginName() {
+		return 'NVIframeInsert' as const;
+	}
 
-    /**
+	/**
      * @inheritDoc
      */
-    static get requires() {
-        return [NVIframeInsertUI] as const;
-    }
+	public static get requires() {
+		return [ NVIframeInsertUI ] as const;
+	}
 }

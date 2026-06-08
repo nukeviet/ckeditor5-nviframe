@@ -10,7 +10,7 @@
 import {
 	addListToDropdown,
 	Collection,
-	ListDropdownItemDefinition,
+	type ListDropdownItemDefinition,
 	type ButtonView,
 	type DropdownView,
 	type InputTextView,
@@ -26,7 +26,7 @@ import {
 } from 'ckeditor5';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+// import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../../theme/iframeform.css';
 
 /**
@@ -96,7 +96,7 @@ export class NVIframeFormView extends View {
 	/**
 	 * Mảng các hàm kiểm tra tính hợp lệ của form
 	 */
-	private readonly _validators: Array<(v: NVIframeFormView) => boolean>;
+	private readonly _validators: Array<( v: NVIframeFormView ) => boolean>;
 
 	/**
 	 * Nhãn của ô nhập URL iframe mặc định
@@ -127,17 +127,17 @@ export class NVIframeFormView extends View {
 	 * @param validators Array of form validators.
 	 * @param locale
 	 */
-	constructor(validators: Array<(v: NVIframeFormView) => boolean>, locale: Locale) {
-		super(locale);
+	constructor( validators: Array<( v: NVIframeFormView ) => boolean>, locale: Locale ) {
+		super( locale );
 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		this.set('iframeURLInputValue', '');
-		this.set('iframeHeightInputValue', 315);
-		this.set('iframeWidthInputValue', 560);
-		this.set('iframeRatioInputValue', [16, 9]);
-		this.set('iframeTypeWidthValue', 'auto');
+		this.set( 'iframeURLInputValue', '' );
+		this.set( 'iframeHeightInputValue', 315 );
+		this.set( 'iframeWidthInputValue', 560 );
+		this.set( 'iframeRatioInputValue', [ 16, 9 ] );
+		this.set( 'iframeTypeWidthValue', 'auto' );
 
 		this.urlInputView = this._createUrlInput();
 		this.widthInputView = this._createWidthInput();
@@ -148,19 +148,19 @@ export class NVIframeFormView extends View {
 		this._validators = validators;
 
 		// Dòng nhập URL
-		const rowInput = new FormRowView(locale);
-		rowInput.children.add(this.urlInputView);
-		rowInput.class.push('ck-iframe-form__row_single');
+		const rowInput = new FormRowView( locale );
+		rowInput.children.add( this.urlInputView );
+		rowInput.class.push( 'ck-iframe-form__row_single' );
 
 		// Dòng chọn kích thước, nhập chiều rộng, chiều cao, tỷ lệ
-		const rowType = new FormRowView(locale);
-		rowType.children.add(this.typeWidthSelectView);
-		rowType.children.add(this.widthInputView);
-		rowType.children.add(this.heightInputView);
-		rowType.children.add(this.ratioInputView);
-		rowType.class.push('ck-iframe-form__row_column');
+		const rowType = new FormRowView( locale );
+		rowType.children.add( this.typeWidthSelectView );
+		rowType.children.add( this.widthInputView );
+		rowType.children.add( this.heightInputView );
+		rowType.children.add( this.ratioInputView );
+		rowType.class.push( 'ck-iframe-form__row_column' );
 
-		this.setTemplate({
+		this.setTemplate( {
 			tag: 'form',
 
 			attributes: {
@@ -177,7 +177,7 @@ export class NVIframeFormView extends View {
 				rowInput,
 				rowType
 			]
-		});
+		} );
 	}
 
 	/**
@@ -186,17 +186,17 @@ export class NVIframeFormView extends View {
 	public override render(): void {
 		super.render();
 
-		submitHandler({
+		submitHandler( {
 			view: this
-		});
+		} );
 
-		this.focusTracker.add(this.urlInputView.element!);
-		this.focusTracker.add(this.widthInputView.element!);
-		this.focusTracker.add(this.heightInputView.element!);
-		this.focusTracker.add(this.ratioInputView.element!);
-		this.focusTracker.add(this.typeWidthSelectView.element!);
+		this.focusTracker.add( this.urlInputView.element! );
+		this.focusTracker.add( this.widthInputView.element! );
+		this.focusTracker.add( this.heightInputView.element! );
+		this.focusTracker.add( this.ratioInputView.element! );
+		this.focusTracker.add( this.typeWidthSelectView.element! );
 
-		this.keystrokes.listenTo(this.element!);
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
@@ -226,17 +226,17 @@ export class NVIframeFormView extends View {
 	/**
 	 * @param url The URL to set.
 	 */
-	public set url(url: string) {
+	public set url( url: string ) {
 		this.urlInputView.fieldView.value = url.trim();
 	}
 
 	/**
 	 * @param type 'auto' or 'fixed'
 	 */
-	public set widthType(type: 'auto' | 'fixed') {
+	public set widthType( type: 'auto' | 'fixed' ) {
 		const t = this.locale!.t;
-		this.set('iframeTypeWidthValue', type);
-		this.typeWidthSelectView.fieldView.buttonView.set({ label: type === 'auto' ? t('Auto') : t('Fixed') });
+		this.set( 'iframeTypeWidthValue', type );
+		this.typeWidthSelectView.fieldView.buttonView.set( { label: type === 'auto' ? t( 'Auto' ) : t( 'Fixed' ) } );
 		this._changeTypeWidth();
 	}
 
@@ -250,7 +250,7 @@ export class NVIframeFormView extends View {
 	/**
 	 * Đặt chiều rộng iframe
 	 */
-	public set width(width: number) {
+	public set width( width: number ) {
 		this.iframeWidthInputValue = width;
 		this.widthInputView.fieldView.value = width.toString();
 	}
@@ -259,13 +259,13 @@ export class NVIframeFormView extends View {
 	 * Lấy chiều rộng iframe
 	 */
 	public get width(): number {
-		return this.widthInputView.fieldView.element!.value ? parseInt(this.widthInputView.fieldView.element!.value) : 0;
+		return this.widthInputView.fieldView.element!.value ? parseInt( this.widthInputView.fieldView.element!.value ) : 0;
 	}
 
 	/**
 	 * Đặt chiều cao iframe
 	 */
-	public set height(height: number) {
+	public set height( height: number ) {
 		this.iframeHeightInputValue = height;
 		this.heightInputView.fieldView.value = height.toString();
 	}
@@ -274,15 +274,15 @@ export class NVIframeFormView extends View {
 	 * Lấy chiều cao iframe
 	 */
 	public get height(): number {
-		return this.heightInputView.fieldView.element!.value ? parseInt(this.heightInputView.fieldView.element!.value) : 0;
+		return this.heightInputView.fieldView.element!.value ? parseInt( this.heightInputView.fieldView.element!.value ) : 0;
 	}
 
 	/**
 	 * Đặt tỷ lệ khung hình
 	 */
-	public set ratio(ratio: [number, number] | null) {
+	public set ratio( ratio: [number, number] | null ) {
 		this.iframeRatioInputValue = ratio;
-		this.ratioInputView.fieldView.value = ratio ? ratio.join(':') : '';
+		this.ratioInputView.fieldView.value = ratio ? ratio.join( ':' ) : '';
 		this._changeTypeWidth();
 	}
 
@@ -291,7 +291,7 @@ export class NVIframeFormView extends View {
 	 */
 	public get ratio(): [number, number] | null {
 		const ratio = this._parseRatio();
-		if (ratio) {
+		if ( ratio ) {
 			this.iframeRatioInputValue = ratio;
 			return ratio;
 		}
@@ -309,8 +309,8 @@ export class NVIframeFormView extends View {
 
 		let errorNumber = 0;
 
-		for (const validator of this._validators) {
-			if (!validator(this)) {
+		for ( const validator of this._validators ) {
+			if ( !validator( this ) ) {
 				errorNumber++;
 			}
 		}
@@ -345,16 +345,16 @@ export class NVIframeFormView extends View {
 	private _changeTypeWidth() {
 		this.resetFormStatus();
 
-		if (this.iframeTypeWidthValue === 'auto') {
-			this.widthInputView.element!.classList.add('ck-hidden');
-			this.heightInputView.element!.classList.add('ck-hidden');
-			this.ratioInputView.element!.classList.remove('ck-hidden');
+		if ( this.iframeTypeWidthValue === 'auto' ) {
+			this.widthInputView.element!.classList.add( 'ck-hidden' );
+			this.heightInputView.element!.classList.add( 'ck-hidden' );
+			this.ratioInputView.element!.classList.remove( 'ck-hidden' );
 			return;
 		}
 
-		this.widthInputView.element!.classList.remove('ck-hidden');
-		this.heightInputView.element!.classList.remove('ck-hidden');
-		this.ratioInputView.element!.classList.add('ck-hidden');
+		this.widthInputView.element!.classList.remove( 'ck-hidden' );
+		this.heightInputView.element!.classList.remove( 'ck-hidden' );
+		this.ratioInputView.element!.classList.add( 'ck-hidden' );
 	}
 
 	/**
@@ -365,21 +365,21 @@ export class NVIframeFormView extends View {
 	private _createUrlInput(): LabeledFieldView<InputTextView> {
 		const t = this.locale!.t;
 
-		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputText);
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const inputField = labeledInput.fieldView;
 
-		this._urlInputViewInfoDefault = t('Paste the iframe URL in the input.');
-		this._urlInputViewInfoTip = t('Tip: Paste the URL into the content to embed faster.');
+		this._urlInputViewInfoDefault = t( 'Paste the iframe URL in the input.' );
+		this._urlInputViewInfoTip = t( 'Tip: Paste the URL into the content to embed faster.' );
 
-		labeledInput.label = t('Iframe URL');
+		labeledInput.label = t( 'Iframe URL' );
 		labeledInput.infoText = this._urlInputViewInfoDefault;
 
 		inputField.inputMode = 'url';
-		inputField.on('input', () => {
+		inputField.on( 'input', () => {
 			// Hiển thị mẹo khi có nhập liệu, không có dữ liệu thì hiển thị nhãn mặc định
 			labeledInput.infoText = inputField.element!.value ? this._urlInputViewInfoTip! : this._urlInputViewInfoDefault!;
 			this.iframeURLInputValue = inputField.element!.value.trim();
-		});
+		} );
 
 		return labeledInput;
 	}
@@ -391,8 +391,8 @@ export class NVIframeFormView extends View {
 	 */
 	private _createTypeWidthSelect(): LabeledFieldView<DropdownView> {
 		const t = this.locale!.t;
-		const labeledInput = new LabeledFieldView(this.locale, (labeledFieldView, viewUid, statusUid) => {
-			const dropdown = createLabeledDropdown(labeledFieldView, viewUid, statusUid);
+		const labeledInput = new LabeledFieldView( this.locale, ( labeledFieldView, viewUid, statusUid ) => {
+			const dropdown = createLabeledDropdown( labeledFieldView, viewUid, statusUid );
 			const button = dropdown.buttonView;
 
 			/**
@@ -400,75 +400,75 @@ export class NVIframeFormView extends View {
 			 * Render trước để lấy element là cái nút sau đó đặt id nút đó là viewUid (for của cái label)
 			 * Đổi lại id của dropdown thành viewUid_outer để tránh trùng id
 			 */
-			dropdown.set({
-				id: `${viewUid}_outer`
-			});
+			dropdown.set( {
+				id: `${ viewUid }_outer`
+			} );
 			dropdown.render();
-			button.element!.setAttribute('id', viewUid);
+			button.element!.setAttribute( 'id', viewUid );
 
 			return dropdown;
-		});
+		} );
 		const dropdown = labeledInput.fieldView;
 
 		// Thêm các lựa chọn cho dropdown
 		const items = new Collection<ListDropdownItemDefinition>();
-		items.add({
+		items.add( {
 			type: 'button',
-			model: new UIModel({
+			model: new UIModel( {
 				withText: true,
-				label: t('Auto'),
-			})
-		});
-		items.add({
+				label: t( 'Auto' )
+			} )
+		} );
+		items.add( {
 			type: 'button',
-			model: new UIModel({
+			model: new UIModel( {
 				withText: true,
-				label: t('Fixed'),
-			})
-		});
-		dropdown.on('execute', (evt) => {
+				label: t( 'Fixed' )
+			} )
+		} );
+		dropdown.on( 'execute', evt => {
 			const buttonView = evt.source as ButtonView;
-			dropdown.buttonView.set({ label: buttonView.label });
-			this.set('iframeTypeWidthValue', buttonView.label === t('Auto') ? 'auto' : 'fixed');
+			dropdown.buttonView.set( { label: buttonView.label } );
+			this.set( 'iframeTypeWidthValue', buttonView.label === t( 'Auto' ) ? 'auto' : 'fixed' );
 
 			// Trường hợp đổi sang tự động mà chiều rộng hoặc chiều cao lỗi thì đặt nó làm mặc định
-			if (this.iframeTypeWidthValue === 'auto') {
-				if (this.width <= 0 || isNaN(this.width)) {
-					this.widthInputView.fieldView.set('value', '560');
+			if ( this.iframeTypeWidthValue === 'auto' ) {
+				if ( this.width <= 0 || isNaN( this.width ) ) {
+					this.widthInputView.fieldView.set( 'value', '560' );
 					this.widthInputView.fieldView.element!.value = '560';
 					this.widthInputView.fieldView.isEmpty = false;
 				}
-				if (this.height <= 0 || isNaN(this.height)) {
-					this.heightInputView.fieldView.set('value', '315');
+				if ( this.height <= 0 || isNaN( this.height ) ) {
+					this.heightInputView.fieldView.set( 'value', '315' );
 					this.heightInputView.fieldView.element!.value = '315';
 					this.heightInputView.fieldView.isEmpty = false;
 				}
 			} else {
 				// Trường hợp đổi sang cố định mà tỷ lệ lỗi thì đặt nó làm mặc định
-				if (this.ratio === null) {
-					this.ratioInputView.fieldView.set('value', '16:9');
+				if ( this.ratio === null ) {
+					this.ratioInputView.fieldView.set( 'value', '16:9' );
 					this.ratioInputView.fieldView.element!.value = '16:9';
 					this.ratioInputView.fieldView.isEmpty = false;
 				}
 			}
 
 			this._changeTypeWidth();
-		});
-		addListToDropdown(dropdown, items);
+		} );
+		addListToDropdown( dropdown, items );
 
 		// Text cho nút dropdown
-		dropdown.buttonView.set({
-			label: t('Auto'),
-			withText: true,
-		});
+		dropdown.buttonView.set( {
+			label: t( 'Auto' ),
+			withText: true
+		} );
 
-		labeledInput.label = t('Size');
+		labeledInput.label = t( 'Size' );
 		labeledInput.isEmpty = false;
-		labeledInput.extendTemplate({
+		labeledInput.extendTemplate( {
 			attributes: {
-				class: ['c4']
-    		}
-		});
+				class: [ 'c4' ]
+			}
+		} );
 
 		return labeledInput;
 	}
@@ -480,18 +480,18 @@ export class NVIframeFormView extends View {
 	 */
 	private _createWidthInput(): LabeledFieldView<InputNumberView> {
 		const t = this.locale!.t;
-		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputNumber);
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputNumber );
 		const inputField = labeledInput.fieldView;
 
-		this._widthInputViewInfoDefault = t('In pixels');
+		this._widthInputViewInfoDefault = t( 'In pixels' );
 
-		labeledInput.label = t('Width');
+		labeledInput.label = t( 'Width' );
 		labeledInput.infoText = this._widthInputViewInfoDefault;
-		labeledInput.extendTemplate({
+		labeledInput.extendTemplate( {
 			attributes: {
-				class: ['c4']
-    		}
-		});
+				class: [ 'c4' ]
+			}
+		} );
 
 		inputField.min = 0;
 		inputField.max = 9999;
@@ -506,18 +506,18 @@ export class NVIframeFormView extends View {
 	 */
 	private _createHeightInput(): LabeledFieldView<InputNumberView> {
 		const t = this.locale!.t;
-		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputNumber);
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputNumber );
 		const inputField = labeledInput.fieldView;
 
-		this._heightInputViewInfoDefault = t('In pixels');
+		this._heightInputViewInfoDefault = t( 'In pixels' );
 
-		labeledInput.label = t('Height');
+		labeledInput.label = t( 'Height' );
 		labeledInput.infoText = this._heightInputViewInfoDefault;
-		labeledInput.extendTemplate({
+		labeledInput.extendTemplate( {
 			attributes: {
-				class: ['c4']
-    		}
-		});
+				class: [ 'c4' ]
+			}
+		} );
 
 		inputField.min = 0;
 		inputField.max = 9999;
@@ -532,18 +532,18 @@ export class NVIframeFormView extends View {
 	 */
 	private _createRatioInput(): LabeledFieldView<InputTextView> {
 		const t = this.locale!.t;
-		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputText);
-		//const inputField = labeledInput.fieldView;
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+		// const inputField = labeledInput.fieldView;
 
-		this._ratioInputViewInfoDefault = t('Use the format x:y');
+		this._ratioInputViewInfoDefault = t( 'Use the format x:y' );
 
-		labeledInput.label = t('Ratio');
+		labeledInput.label = t( 'Ratio' );
 		labeledInput.infoText = this._ratioInputViewInfoDefault;
-		labeledInput.extendTemplate({
+		labeledInput.extendTemplate( {
 			attributes: {
-				class: ['c8']
-    		}
-		});
+				class: [ 'c8' ]
+			}
+		} );
 
 		return labeledInput;
 	}
@@ -554,9 +554,9 @@ export class NVIframeFormView extends View {
 	 * @returns [number, number] | null
 	 */
 	private _parseRatio(): [number, number] | null {
-		const parts = this.ratioInputView.fieldView.element!.value.split(':').map(part => parseInt(part.trim(), 10));
-		if (parts.length === 2 && parts.every(num => !isNaN(num) && num > 0)) {
-			return [parts[0], parts[1]];
+		const parts = this.ratioInputView.fieldView.element!.value.split( ':' ).map( part => parseInt( part.trim(), 10 ) );
+		if ( parts.length === 2 && parts.every( num => !isNaN( num ) && num > 0 ) ) {
+			return [ parts[ 0 ], parts[ 1 ] ];
 		}
 
 		return null;

@@ -26,16 +26,17 @@
  * ```
  */
 export interface IframeConfig {
-    /*
+
+	/*
      *
      */
-    attributes?: IframeAttributes;
+	attributes?: IframeAttributes;
 }
 
 export interface IframeAttributes extends Record<string, unknown> {
-    sandbox?: string;
-    allow?: string;
-    frameborder?: string;
-    referrerpolicy?: string;
-    allowfullscreen?: boolean;
+	sandbox?: string;
+	allow?: string;
+	frameborder?: string;
+	referrerpolicy?: string;
+	allowfullscreen?: boolean;
 }
