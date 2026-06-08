@@ -22,9 +22,11 @@ import {
 	createLabeledInputNumber,
 	createLabeledInputText,
 	createLabeledDropdown,
-	submitHandler
+	submitHandler,
+	FocusTracker,
+	KeystrokeHandler,
+	type Locale
 } from 'ckeditor5';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
 // import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../../theme/iframeform.css';
