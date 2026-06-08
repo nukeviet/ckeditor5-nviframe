@@ -3,14 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@media screen and (max-width: 600px) {
-	.ck.ck-responsive-form.ck-iframe-form {
-		.ck-labeled-field-view {
-			margin: 0;
-		}
-	}
-}
-
 .ck-iframe-form__row_single {
 	>div {
 		flex: 0 0 100%;
@@ -223,6 +215,14 @@
 					}
 				}
 			}
+		}
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.ck.ck-responsive-form.ck-iframe-form {
+		.ck-labeled-field-view {
+			margin: 0;
 		}
 	}
 }
