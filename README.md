@@ -6,7 +6,7 @@ Công cụ chèn iframe cho NukeViet
 
 Yêu cầu:
 
-- Node.js 18.0.0+
+- Node.js 26.10.0+
 - npm 5.7.1+
 
 ```

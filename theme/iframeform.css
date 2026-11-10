@@ -6,11 +6,11 @@
 .ck-iframe-form__row_single {
 	>div {
 		flex: 0 0 100%;
-		max-width: 100%;
+		max-inline-size: 100%;
 
 		.ck-input {
 			flex: 0 0 100%;
-			max-width: 100%;
+			max-inline-size: 100%;
 		}
 	}
 }
@@ -18,196 +18,201 @@
 .ck.ck-iframe-form {
 	@media screen and (max-width: 600px) {
 		&.ck-iframe-form {
-			width: calc(100vw - var(--ck-spacing-large) - 32px);
-			padding: var(--ck-spacing-large);
+			inline-size: calc(100vi - var(--ck-spacing-lg) - 32px);
+			padding: var(--ck-spacing-lg);
 		}
 	}
 
 	>.ck-form__row {
 		padding: 0;
-		margin-bottom: var(--ck-spacing-large);
-		width: 500px;
+		margin-block-end: var(--ck-spacing-lg);
+		inline-size: 500px;
 
 		&:not(.ck-iframe-form__row_column) {
-			margin-left: 0 !important;
-			margin-right: 0 !important;
+			/* eslint-disable-next-line css/no-important -- Cần ghi đè margin của .ck-form__row trong CKEditor. */
+			margin-inline-start: 0 !important;
+			/* eslint-disable-next-line css/no-important -- Cần ghi đè margin của .ck-form__row trong CKEditor. */
+			margin-inline-end: 0 !important;
 		}
 
 		@media screen and (max-width: 600px) {
-			width: 100%;
+			inline-size: 100%;
 		}
 
 		&:last-child {
-			margin-bottom: 0;
+			margin-block-end: 0;
 		}
 
 		.ck-dropdown {
 			>.ck-button {
-				border: 1px solid var(--ck-color-input-border);
+				border: 1px solid var(--ck-input-border-color);
 
 				&:focus {
 					outline: none;
-					border: var(--ck-focus-ring);
-					box-shadow: var(--ck-focus-outer-shadow), 0 0;
+					border: 1px solid var(--ck-focus-border-color);
+					box-shadow: var(--ck-focus-shadow), 0 0;
 				}
 			}
 		}
 
 		&.ck-iframe-form__row_column {
-			margin-left: calc(-0.5 * var(--ck-spacing-large)) !important;
-			margin-right: calc(-0.5 * var(--ck-spacing-large)) !important;
+			/* eslint-disable-next-line css/no-important -- Cần ghi đè margin của .ck-form__row trong CKEditor. */
+			margin-inline-start: calc(-0.5 * var(--ck-spacing-lg)) !important;
+			/* eslint-disable-next-line css/no-important -- Cần ghi đè margin của .ck-form__row trong CKEditor. */
+			margin-inline-end: calc(-0.5 * var(--ck-spacing-lg)) !important;
 			flex-wrap: wrap;
-			width: calc(500px + var(--ck-spacing-large));
+			inline-size: calc(500px + var(--ck-spacing-lg));
 
 			@media screen and (max-width: 600px) {
-				width: calc(100% + var(--ck-spacing-large));
+				inline-size: calc(100% + var(--ck-spacing-lg));
 			}
 
 			>div {
-				padding-left: calc(var(--ck-spacing-large) * 0.5);
-				padding-right: calc(var(--ck-spacing-large) * 0.5);
+				padding-inline-start: calc(var(--ck-spacing-lg) * 0.5);
+				padding-inline-end: calc(var(--ck-spacing-lg) * 0.5);
 				flex: 0 0 100%;
-				max-width: 100%;
+				max-inline-size: 100%;
+				/* eslint-disable-next-line css/no-important -- Cần ghi đè margin của .ck-form__row trong CKEditor. */
 				margin-inline-start: 0 !important;
 
 				@media screen and (max-width: 600px) {
-					margin-bottom: var(--ck-spacing-large);
+					margin-block-end: var(--ck-spacing-lg);
 
 					&:last-child {
-						margin-bottom: 0;
+						margin-block-end: 0;
 					}
 				}
 
 				&.c1 {
 					flex: 0 0 8.3333%;
-					max-width: 8.3333%;
+					max-inline-size: 8.3333%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c2 {
 					flex: 0 0 16.6667%;
-					max-width: 16.6667%;
+					max-inline-size: 16.6667%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c3 {
 					flex: 0 0 25%;
-					max-width: 25%;
+					max-inline-size: 25%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c4 {
 					flex: 0 0 33.3333%;
-					max-width: 33.3333%;
+					max-inline-size: 33.3333%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c5 {
 					flex: 0 0 41.6667%;
-					max-width: 41.6667%;
+					max-inline-size: 41.6667%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c6 {
 					flex: 0 0 50%;
-					max-width: 50%;
+					max-inline-size: 50%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c7 {
 					flex: 0 0 58.3333%;
-					max-width: 58.3333%;
+					max-inline-size: 58.3333%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c8 {
 					flex: 0 0 66.6667%;
-					max-width: 66.6667%;
+					max-inline-size: 66.6667%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c9 {
 					flex: 0 0 75%;
-					max-width: 75%;
+					max-inline-size: 75%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c10 {
 					flex: 0 0 83.3333%;
-					max-width: 83.3333%;
+					max-inline-size: 83.3333%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c11 {
 					flex: 0 0 91.6667%;
-					max-width: 91.6667%;
+					max-inline-size: 91.6667%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				&.c12 {
 					flex: 0 0 100%;
-					max-width: 100%;
+					max-inline-size: 100%;
 
 					@media screen and (max-width: 600px) {
 						flex: 0 0 100%;
-						max-width: 100%;
+						max-inline-size: 100%;
 					}
 				}
 
 				.ck-input {
 					flex: 0 0 100%;
-					max-width: 100%;
-					min-width: 0;
+					max-inline-size: 100%;
+					min-inline-size: 0;
 				}
 
 				.ck-dropdown {
 					flex: 0 0 100%;
-					max-width: 100%;
-					min-width: 0;
+					max-inline-size: 100%;
+					min-inline-size: 0;
 
 					>.ck-button {
 						display: flex;
